@@ -2361,7 +2361,7 @@
       },
       "type": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "type",
@@ -3039,7 +3039,15 @@
       "required": false,
       "types": [
         {
-          "type": "pp",
+          "type": "ppElse",
+          "named": true
+        },
+        {
+          "type": "ppEndIf",
+          "named": true
+        },
+        {
+          "type": "ppIf",
           "named": true
         }
       ]
@@ -6734,7 +6742,7 @@
     "fields": {
       "exception": {
         "multiple": true,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "exprBinary",
@@ -7514,7 +7522,15 @@
           "named": true
         },
         {
-          "type": "pp",
+          "type": "ppElse",
+          "named": true
+        },
+        {
+          "type": "ppEndIf",
+          "named": true
+        },
+        {
+          "type": "ppIf",
           "named": true
         },
         {
@@ -8288,7 +8304,8 @@
   },
   {
     "type": "comment",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "identifier",
@@ -8915,7 +8932,19 @@
     "named": true
   },
   {
-    "type": "pp",
+    "type": "ppDirective",
+    "named": true
+  },
+  {
+    "type": "ppElse",
+    "named": true
+  },
+  {
+    "type": "ppEndIf",
+    "named": true
+  },
+  {
+    "type": "ppIf",
     "named": true
   }
 ]

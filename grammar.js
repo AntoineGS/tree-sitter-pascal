@@ -89,13 +89,13 @@ function pp($, ...rule) {
 		choice(
 			seq(...rule),
 			seq(
-				alias(/\{\$if[^}]*\}/i, $.pp),
+				alias(/\{\$if[^}]*\}/i, $.ppIf),
 				...rule,
 				repeat(seq(
-					alias(/\{\$else[^}]*\}/i, $.pp),
+					alias(/\{\$else[^}]*\}/i, $.ppElse),
 					...rule
 				)),
-				alias(/\{\$end[^}]*\}/i, $.pp)
+				alias(/\{\$(endif|ifend)[^}]*\}/i, $.ppEndIf)
 			),
 		)
 	);
@@ -268,7 +268,7 @@ function statements(trailing) {
 module.exports = grammar({
 	name: "pascal",
 
-	extras: $ => [$._space, $.comment, $.pp],
+	extras: $ => [$._space, $.comment, $._pp],
 
 	word: $ => $.identifier,
 
@@ -1188,14 +1188,14 @@ module.exports = grammar({
 		kTrue:             $ => /true/i,
 		kFalse:            $ => /false/i,
 
-		kIfdef:            $ => /ifdef/i,
-		kIfndef:           $ => /ifndef/i,
-		kEndif:            $ => /endif/i,
-
 		identifier:        $ => /[&]?[a-zA-Z_]+[0-9_a-zA-Z$]*/,
 
 	  	_space:            $ => /[\s\r\n\t]+/,
-		pp:                $ => /\{\$[^}]*\}/,
+		_pp:               $ => choice($.ppIf, $.ppElse, $.ppEndIf, $.ppDirective),
+		ppIf:              $ => token(prec(3, /\{\$(ifdef|ifndef|if)([^a-zA-Z_][^}]*)?\}/i)),
+		ppElse:            $ => token(prec(3, /\{\$(elseif|else)([^a-zA-Z_][^}]*)?\}/i)),
+		ppEndIf:           $ => token(prec(3, /\{\$(endif|ifend)([^a-zA-Z_][^}]*)?\}/i)),
+		ppDirective:       $ => token(prec(1, /\{\$[^}]*\}/)),
 		comment:           $ => token(choice(
 			seq('//', /.*/),
 			seq('{', /([^$}][^}]*)?/, '}'),

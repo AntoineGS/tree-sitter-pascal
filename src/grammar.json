@@ -4026,7 +4026,7 @@
                 "flags": "i"
               },
               "named": true,
-              "value": "pp"
+              "value": "ppIf"
             },
             {
               "type": "CHOICE",
@@ -4078,7 +4078,7 @@
                       "flags": "i"
                     },
                     "named": true,
-                    "value": "pp"
+                    "value": "ppElse"
                   },
                   {
                     "type": "CHOICE",
@@ -4124,11 +4124,11 @@
               "type": "ALIAS",
               "content": {
                 "type": "PATTERN",
-                "value": "\\{\\$end[^}]*\\}",
+                "value": "\\{\\$(endif|ifend)[^}]*\\}",
                 "flags": "i"
               },
               "named": true,
-              "value": "pp"
+              "value": "ppEndIf"
             }
           ]
         }
@@ -4785,7 +4785,7 @@
                     "flags": "i"
                   },
                   "named": true,
-                  "value": "pp"
+                  "value": "ppIf"
                 },
                 {
                   "type": "FIELD",
@@ -4847,7 +4847,7 @@
                           "flags": "i"
                         },
                         "named": true,
-                        "value": "pp"
+                        "value": "ppElse"
                       },
                       {
                         "type": "FIELD",
@@ -4903,11 +4903,11 @@
                   "type": "ALIAS",
                   "content": {
                     "type": "PATTERN",
-                    "value": "\\{\\$end[^}]*\\}",
+                    "value": "\\{\\$(endif|ifend)[^}]*\\}",
                     "flags": "i"
                   },
                   "named": true,
-                  "value": "pp"
+                  "value": "ppEndIf"
                 }
               ]
             }
@@ -9539,21 +9539,6 @@
       "value": "false",
       "flags": "i"
     },
-    "kIfdef": {
-      "type": "PATTERN",
-      "value": "ifdef",
-      "flags": "i"
-    },
-    "kIfndef": {
-      "type": "PATTERN",
-      "value": "ifndef",
-      "flags": "i"
-    },
-    "kEndif": {
-      "type": "PATTERN",
-      "value": "endif",
-      "flags": "i"
-    },
     "identifier": {
       "type": "PATTERN",
       "value": "[&]?[a-zA-Z_]+[0-9_a-zA-Z$]*"
@@ -9562,9 +9547,73 @@
       "type": "PATTERN",
       "value": "[\\s\\r\\n\\t]+"
     },
-    "pp": {
-      "type": "PATTERN",
-      "value": "\\{\\$[^}]*\\}"
+    "_pp": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "ppIf"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "ppElse"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "ppEndIf"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "ppDirective"
+        }
+      ]
+    },
+    "ppIf": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 3,
+        "content": {
+          "type": "PATTERN",
+          "value": "\\{\\$(ifdef|ifndef|if)([^a-zA-Z_][^}]*)?\\}",
+          "flags": "i"
+        }
+      }
+    },
+    "ppElse": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 3,
+        "content": {
+          "type": "PATTERN",
+          "value": "\\{\\$(elseif|else)([^a-zA-Z_][^}]*)?\\}",
+          "flags": "i"
+        }
+      }
+    },
+    "ppEndIf": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 3,
+        "content": {
+          "type": "PATTERN",
+          "value": "\\{\\$(endif|ifend)([^a-zA-Z_][^}]*)?\\}",
+          "flags": "i"
+        }
+      }
+    },
+    "ppDirective": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 1,
+        "content": {
+          "type": "PATTERN",
+          "value": "\\{\\$[^}]*\\}"
+        }
+      }
     },
     "comment": {
       "type": "TOKEN",
@@ -9620,7 +9669,7 @@
     },
     {
       "type": "SYMBOL",
-      "name": "pp"
+      "name": "_pp"
     }
   ],
   "conflicts": [
@@ -9658,5 +9707,6 @@
   "precedences": [],
   "externals": [],
   "inline": [],
-  "supertypes": []
+  "supertypes": [],
+  "reserved": {}
 }
