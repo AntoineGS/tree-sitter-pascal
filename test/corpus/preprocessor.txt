@@ -150,10 +150,10 @@ Preprocessor directives 1
 (root
   (ppDirective)
   (ppDirective)
-  (ppIf)
   (ppDirective)
   (ppDirective)
-  (ppEndIf))
+  (ppDirective)
+  (ppDirective))
 
 ===
 Preprocessor directives 2
@@ -176,13 +176,13 @@ end;
           (type
             (typeref
               (identifier))))
-        (ppIf)
+        (ppDirective)
         (declArg
           (identifier)
           (type
             (typeref
               (identifier))))
-        (ppEndIf)))
+        (ppDirective)))
     (block
       (kBegin)
       (kEnd))))
@@ -205,11 +205,14 @@ end;
       (declArgs
         (declArg
           (identifier)
-          (ppIf)
           (type
+            (ppIf)
             (typeref
-              (identifier))))
-        (ppElse)))
+              (identifier))
+            (ppElse)
+            (typeref
+              (identifier))
+            (ppEndIf)))))
     (block
       (kBegin)
       (kEnd))))
@@ -240,7 +243,7 @@ end;
       (identifier))
     (block
       (kBegin)
-      (ppIf)
+      (ppDirective)
       (if
         (kIf)
         (kTrue)
@@ -250,7 +253,7 @@ end;
             (identifier)
             (exprArgs
               (literalString)))))
-      (ppElse)
+      (ppDirective)
       (while
         (kWhile)
         (kTrue)
@@ -260,7 +263,13 @@ end;
             (identifier)
             (exprArgs
               (literalString)))))
-      (ppElse)
+      (ppDirective)
+      (statement
+        (exprCall
+          (identifier)
+          (exprArgs
+            (literalString))))
+      (ppDirective)
       (kEnd))))
 
 ===
@@ -286,8 +295,12 @@ end;
     (ppIf)
     (block
       (kBegin)
-      (kEnd)))
-  (ppElse))
+      (kEnd))
+    (ppElse)
+    (block
+      (kBegin)
+      (kEnd))
+    (ppEndIf)))
 
 ===
 Preprocessor directives 6
@@ -306,21 +319,27 @@ type
     (kVar)
     (declVar
       (identifier)
-      (ppIf)
       (type
+        (ppIf)
         (typeref
-          (identifier)))
-      (ppElse)))
+          (identifier))
+        (ppElse)
+        (typeref
+          (identifier))
+        (ppEndIf))))
   (declTypes
     (kType)
     (declType
       (identifier)
       (kEq)
-      (ppIf)
       (type
+        (ppIf)
         (typeref
-          (identifier)))
-      (ppElse))))
+          (identifier))
+        (ppElse)
+        (typeref
+          (identifier))
+        (ppEndIf)))))
 
 ===
 Preprocessor directives in uses clause
@@ -352,10 +371,14 @@ end.
         (kUses)
         (moduleName
           (identifier))
-        (ppIf)
-        (moduleName
-          (identifier))
-        (ppElse)
+        (ppUsesBlock
+          (ppIf)
+          (moduleName
+            (identifier))
+          (ppElse)
+          (moduleName
+            (identifier))
+          (ppEndIf))
         (moduleName
           (identifier))))
     (implementation
@@ -427,16 +450,21 @@ end.
       (kInterface)
       (declUses
         (kUses)
-        (ppIf)
-        (moduleName
-          (identifier))
-        (ppIf)
-        (moduleName
-          (identifier)
-          (kDot)
-          (identifier))
-        (ppElse)
-        (ppEndIf)
+        (ppUsesBlock
+          (ppIf)
+          (moduleName
+            (identifier))
+          (ppUsesBlock
+            (ppIf)
+            (moduleName
+              (identifier)
+              (kDot)
+              (identifier))
+            (ppElse)
+            (moduleName
+              (identifier))
+            (ppEndIf))
+          (ppEndIf))
         (moduleName
           (identifier))))
     (implementation

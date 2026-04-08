@@ -89,13 +89,13 @@ function pp($, ...rule) {
 		choice(
 			seq(...rule),
 			seq(
-				alias(/\{\$if[^}]*\}/i, $.ppIf),
+				alias(token(prec(5, /\{\$if[^}]*\}/i)), $.ppIf),
 				...rule,
 				repeat(seq(
-					alias(/\{\$else[^}]*\}/i, $.ppElse),
+					alias(token(prec(5, /\{\$else[^}]*\}/i)), $.ppElse),
 					...rule
 				)),
-				alias(/\{\$(endif|ifend)[^}]*\}/i, $.ppEndIf)
+				alias(token(prec(5, /\{\$(endif|ifend)[^}]*\}/i)), $.ppEndIf)
 			),
 		)
 	);
@@ -268,7 +268,7 @@ function statements(trailing) {
 module.exports = grammar({
 	name: "pascal",
 
-	extras: $ => [$._space, $.comment, $._pp],
+	extras: $ => [$._space, $.comment, $.ppDirective],
 
 	word: $ => $.identifier,
 
@@ -641,7 +641,19 @@ module.exports = grammar({
 
 		// Declaration sections
 
-		declUses:        $ => seq($.kUses, delimited($.moduleName), ';'),
+		declUses:        $ => seq($.kUses, repeat1($._usesClauseEntry), ';'),
+
+		_usesClauseEntry: $ => choice($.moduleName, $.ppUsesBlock, ','),
+
+		ppUsesBlock: $ => seq(
+			alias(token(prec(5, /\{\$(ifdef|ifndef|if)([^a-zA-Z_}][^}]*)?\}/i)), $.ppIf),
+			repeat(choice($.moduleName, $.ppUsesBlock, ',')),
+			repeat(seq(
+				alias(token(prec(5, /\{\$(elseif|else)([^a-zA-Z_}][^}]*)?\}/i)), $.ppElse),
+				repeat(choice($.moduleName, $.ppUsesBlock, ','))
+			)),
+			alias(token(prec(5, /\{\$(endif|ifend)([^a-zA-Z_}][^}]*)?\}/i)), $.ppEndIf)
+		),
 		declExports:     $ => seq($.kExports, delimited($.declExport), ';'),
 
 		declTypes:       $ => seq(
@@ -1191,11 +1203,7 @@ module.exports = grammar({
 		identifier:        $ => /[&]?[a-zA-Z_]+[0-9_a-zA-Z$]*/,
 
 	  	_space:            $ => /[\s\r\n\t]+/,
-		_pp:               $ => choice($.ppIf, $.ppElse, $.ppEndIf, $.ppDirective),
-		ppIf:              $ => token(prec(3, /\{\$(ifdef|ifndef|if)([^a-zA-Z_][^}]*)?\}/i)),
-		ppElse:            $ => token(prec(3, /\{\$(elseif|else)([^a-zA-Z_][^}]*)?\}/i)),
-		ppEndIf:           $ => token(prec(3, /\{\$(endif|ifend)([^a-zA-Z_][^}]*)?\}/i)),
-		ppDirective:       $ => token(prec(1, /\{\$[^}]*\}/)),
+		ppDirective:       $ => token(prec(-1, /\{\$[^}]*\}/)),
 		comment:           $ => token(choice(
 			seq('//', /.*/),
 			seq('{', /([^$}][^}]*)?/, '}'),

@@ -4021,9 +4021,16 @@
             {
               "type": "ALIAS",
               "content": {
-                "type": "PATTERN",
-                "value": "\\{\\$if[^}]*\\}",
-                "flags": "i"
+                "type": "TOKEN",
+                "content": {
+                  "type": "PREC",
+                  "value": 5,
+                  "content": {
+                    "type": "PATTERN",
+                    "value": "\\{\\$if[^}]*\\}",
+                    "flags": "i"
+                  }
+                }
               },
               "named": true,
               "value": "ppIf"
@@ -4073,9 +4080,16 @@
                   {
                     "type": "ALIAS",
                     "content": {
-                      "type": "PATTERN",
-                      "value": "\\{\\$else[^}]*\\}",
-                      "flags": "i"
+                      "type": "TOKEN",
+                      "content": {
+                        "type": "PREC",
+                        "value": 5,
+                        "content": {
+                          "type": "PATTERN",
+                          "value": "\\{\\$else[^}]*\\}",
+                          "flags": "i"
+                        }
+                      }
                     },
                     "named": true,
                     "value": "ppElse"
@@ -4123,9 +4137,16 @@
             {
               "type": "ALIAS",
               "content": {
-                "type": "PATTERN",
-                "value": "\\{\\$(endif|ifend)[^}]*\\}",
-                "flags": "i"
+                "type": "TOKEN",
+                "content": {
+                  "type": "PREC",
+                  "value": 5,
+                  "content": {
+                    "type": "PATTERN",
+                    "value": "\\{\\$(endif|ifend)[^}]*\\}",
+                    "flags": "i"
+                  }
+                }
               },
               "named": true,
               "value": "ppEndIf"
@@ -4780,9 +4801,16 @@
                 {
                   "type": "ALIAS",
                   "content": {
-                    "type": "PATTERN",
-                    "value": "\\{\\$if[^}]*\\}",
-                    "flags": "i"
+                    "type": "TOKEN",
+                    "content": {
+                      "type": "PREC",
+                      "value": 5,
+                      "content": {
+                        "type": "PATTERN",
+                        "value": "\\{\\$if[^}]*\\}",
+                        "flags": "i"
+                      }
+                    }
                   },
                   "named": true,
                   "value": "ppIf"
@@ -4842,9 +4870,16 @@
                       {
                         "type": "ALIAS",
                         "content": {
-                          "type": "PATTERN",
-                          "value": "\\{\\$else[^}]*\\}",
-                          "flags": "i"
+                          "type": "TOKEN",
+                          "content": {
+                            "type": "PREC",
+                            "value": 5,
+                            "content": {
+                              "type": "PATTERN",
+                              "value": "\\{\\$else[^}]*\\}",
+                              "flags": "i"
+                            }
+                          }
                         },
                         "named": true,
                         "value": "ppElse"
@@ -4902,9 +4937,16 @@
                 {
                   "type": "ALIAS",
                   "content": {
-                    "type": "PATTERN",
-                    "value": "\\{\\$(endif|ifend)[^}]*\\}",
-                    "flags": "i"
+                    "type": "TOKEN",
+                    "content": {
+                      "type": "PREC",
+                      "value": 5,
+                      "content": {
+                        "type": "PATTERN",
+                        "value": "\\{\\$(endif|ifend)[^}]*\\}",
+                        "flags": "i"
+                      }
+                    }
                   },
                   "named": true,
                   "value": "ppEndIf"
@@ -5072,53 +5114,136 @@
           "name": "kUses"
         },
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "REPEAT1",
-                      "content": {
-                        "type": "PREC",
-                        "value": 0,
-                        "content": {
-                          "type": "SEQ",
-                          "members": [
-                            {
-                              "type": "SYMBOL",
-                              "name": "moduleName"
-                            },
-                            {
-                              "type": "STRING",
-                              "value": ","
-                            }
-                          ]
-                        }
-                      }
-                    },
-                    {
-                      "type": "BLANK"
-                    }
-                  ]
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "moduleName"
-                }
-              ]
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
+          "type": "REPEAT1",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_usesClauseEntry"
+          }
         },
         {
           "type": "STRING",
           "value": ";"
+        }
+      ]
+    },
+    "_usesClauseEntry": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "moduleName"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "ppUsesBlock"
+        },
+        {
+          "type": "STRING",
+          "value": ","
+        }
+      ]
+    },
+    "ppUsesBlock": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "TOKEN",
+            "content": {
+              "type": "PREC",
+              "value": 5,
+              "content": {
+                "type": "PATTERN",
+                "value": "\\{\\$(ifdef|ifndef|if)([^a-zA-Z_}][^}]*)?\\}",
+                "flags": "i"
+              }
+            }
+          },
+          "named": true,
+          "value": "ppIf"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "moduleName"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "ppUsesBlock"
+              },
+              {
+                "type": "STRING",
+                "value": ","
+              }
+            ]
+          }
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "TOKEN",
+                  "content": {
+                    "type": "PREC",
+                    "value": 5,
+                    "content": {
+                      "type": "PATTERN",
+                      "value": "\\{\\$(elseif|else)([^a-zA-Z_}][^}]*)?\\}",
+                      "flags": "i"
+                    }
+                  }
+                },
+                "named": true,
+                "value": "ppElse"
+              },
+              {
+                "type": "REPEAT",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "moduleName"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "ppUsesBlock"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ","
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "TOKEN",
+            "content": {
+              "type": "PREC",
+              "value": 5,
+              "content": {
+                "type": "PATTERN",
+                "value": "\\{\\$(endif|ifend)([^a-zA-Z_}][^}]*)?\\}",
+                "flags": "i"
+              }
+            }
+          },
+          "named": true,
+          "value": "ppEndIf"
         }
       ]
     },
@@ -9547,68 +9672,11 @@
       "type": "PATTERN",
       "value": "[\\s\\r\\n\\t]+"
     },
-    "_pp": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "ppIf"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "ppElse"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "ppEndIf"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "ppDirective"
-        }
-      ]
-    },
-    "ppIf": {
-      "type": "TOKEN",
-      "content": {
-        "type": "PREC",
-        "value": 3,
-        "content": {
-          "type": "PATTERN",
-          "value": "\\{\\$(ifdef|ifndef|if)([^a-zA-Z_][^}]*)?\\}",
-          "flags": "i"
-        }
-      }
-    },
-    "ppElse": {
-      "type": "TOKEN",
-      "content": {
-        "type": "PREC",
-        "value": 3,
-        "content": {
-          "type": "PATTERN",
-          "value": "\\{\\$(elseif|else)([^a-zA-Z_][^}]*)?\\}",
-          "flags": "i"
-        }
-      }
-    },
-    "ppEndIf": {
-      "type": "TOKEN",
-      "content": {
-        "type": "PREC",
-        "value": 3,
-        "content": {
-          "type": "PATTERN",
-          "value": "\\{\\$(endif|ifend)([^a-zA-Z_][^}]*)?\\}",
-          "flags": "i"
-        }
-      }
-    },
     "ppDirective": {
       "type": "TOKEN",
       "content": {
         "type": "PREC",
-        "value": 1,
+        "value": -1,
         "content": {
           "type": "PATTERN",
           "value": "\\{\\$[^}]*\\}"
@@ -9669,7 +9737,7 @@
     },
     {
       "type": "SYMBOL",
-      "name": "_pp"
+      "name": "ppDirective"
     }
   ],
   "conflicts": [

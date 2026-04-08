@@ -212,7 +212,7 @@
 
 ; -- Comments
 (comment)         @comment
-[(ppIf) (ppElse) (ppEndIf) (ppDirective)] @keyword.directive
+[(ppIf) (ppElse) (ppEndIf) (ppDirective) (ppUsesBlock)] @keyword.directive
 
 ; -- Type declaration
 

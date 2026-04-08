@@ -2721,6 +2721,10 @@
         {
           "type": "moduleName",
           "named": true
+        },
+        {
+          "type": "ppUsesBlock",
+          "named": true
         }
       ]
     }
@@ -6241,6 +6245,37 @@
     }
   },
   {
+    "type": "ppUsesBlock",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "moduleName",
+          "named": true
+        },
+        {
+          "type": "ppElse",
+          "named": true
+        },
+        {
+          "type": "ppEndIf",
+          "named": true
+        },
+        {
+          "type": "ppIf",
+          "named": true
+        },
+        {
+          "type": "ppUsesBlock",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "procAttribute",
     "named": true,
     "fields": {
@@ -8933,7 +8968,8 @@
   },
   {
     "type": "ppDirective",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "ppElse",
