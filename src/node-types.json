@@ -365,6 +365,10 @@
           "named": true
         },
         {
+          "type": "ppBlock",
+          "named": true
+        },
+        {
           "type": "raise",
           "named": true
         },
@@ -449,6 +453,10 @@
         },
         {
           "type": "label",
+          "named": true
+        },
+        {
+          "type": "ppBlock",
           "named": true
         },
         {
@@ -616,6 +624,10 @@
         },
         {
           "type": "literalString",
+          "named": true
+        },
+        {
+          "type": "ppBlock",
           "named": true
         },
         {
@@ -4537,6 +4549,10 @@
           "named": true
         },
         {
+          "type": "ppBlock",
+          "named": true
+        },
+        {
           "type": "raise",
           "named": true
         },
@@ -5794,6 +5810,10 @@
         },
         {
           "type": "label",
+          "named": true
+        },
+        {
+          "type": "ppBlock",
           "named": true
         },
         {
@@ -7620,6 +7640,10 @@
         },
         {
           "type": "label",
+          "named": true
+        },
+        {
+          "type": "ppBlock",
           "named": true
         },
         {

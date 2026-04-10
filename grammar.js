@@ -397,8 +397,8 @@ module.exports = grammar({
 
 		_statements:     $ => repeat1(choice($.varDef, $._statement, $.label, $.ppBlock)),
 		_statementsTr:   $ => seq(
-			repeat(choice($._statement, $.label)),
-			choice(tr($,'_statement'), $._statement)
+			repeat(choice($._statement, $.label, $.ppBlock)),
+			choice(tr($,'_statement'), $._statement, $.ppBlock)
 		),
 
 		statements:      $ => $._statements,

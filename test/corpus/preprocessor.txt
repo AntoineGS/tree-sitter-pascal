@@ -244,33 +244,34 @@ end;
       (identifier))
     (block
       (kBegin)
-      (ppDirective)
-      (if
-        (kIf)
-        (kTrue)
-        (kThen)
+      (ppBlock
+        (ppIf)
+        (if
+          (kIf)
+          (kTrue)
+          (kThen)
+          (statement
+            (exprCall
+              (identifier)
+              (exprArgs
+                (literalString)))))
+        (ppElse)
+        (while
+          (kWhile)
+          (kTrue)
+          (kDo)
+          (statement
+            (exprCall
+              (identifier)
+              (exprArgs
+                (literalString)))))
+        (ppElse)
         (statement
           (exprCall
             (identifier)
             (exprArgs
-              (literalString)))))
-      (ppDirective)
-      (while
-        (kWhile)
-        (kTrue)
-        (kDo)
-        (statement
-          (exprCall
-            (identifier)
-            (exprArgs
-              (literalString)))))
-      (ppDirective)
-      (statement
-        (exprCall
-          (identifier)
-          (exprArgs
-            (literalString))))
-      (ppDirective)
+              (literalString))))
+        (ppEndIf))
       (kEnd))))
 
 ===
@@ -561,6 +562,39 @@ end
       rhs: (literalNumber))
     (ppDirective)
     (kEnd)))
+
+===
+ppBlock in begin..end statements
+===
+
+procedure a;
+begin
+  x;
+  {$IFDEF LOG}
+  y;
+  {$ENDIF}
+  z;
+end;
+
+---
+
+(root
+  (defProc
+    (declProc
+      (kProcedure)
+      (identifier))
+    (block
+      (kBegin)
+      (statement
+        (identifier))
+      (ppBlock
+        (ppIf)
+        (statement
+          (identifier))
+        (ppEndIf))
+      (statement
+        (identifier))
+      (kEnd))))
 
 ===
 ppBlock in class fields
