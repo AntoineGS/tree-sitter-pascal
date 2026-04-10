@@ -150,10 +150,11 @@ Preprocessor directives 1
 (root
   (ppDirective)
   (ppDirective)
-  (ppDirective)
-  (ppDirective)
-  (ppDirective)
-  (ppDirective))
+  (ppBlock
+    (ppIf)
+    (ppDirective)
+    (ppDirective)
+    (ppEndIf)))
 
 ===
 Preprocessor directives 2

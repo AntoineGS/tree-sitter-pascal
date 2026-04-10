@@ -1176,6 +1176,10 @@
         {
           "type": "literalString",
           "named": true
+        },
+        {
+          "type": "ppBlock",
+          "named": true
         }
       ]
     }
@@ -1262,6 +1266,10 @@
         },
         {
           "type": "kResourcestring",
+          "named": true
+        },
+        {
+          "type": "ppBlock",
           "named": true
         }
       ]
@@ -1583,6 +1591,10 @@
           "named": true
         },
         {
+          "type": "ppBlock",
+          "named": true
+        },
+        {
           "type": "typeref",
           "named": true
         }
@@ -1676,6 +1688,10 @@
         },
         {
           "type": "kPacked",
+          "named": true
+        },
+        {
+          "type": "ppBlock",
           "named": true
         }
       ]
@@ -2495,6 +2511,10 @@
         {
           "type": "kStrict",
           "named": true
+        },
+        {
+          "type": "ppBlock",
+          "named": true
         }
       ]
     }
@@ -2701,6 +2721,10 @@
         },
         {
           "type": "kType",
+          "named": true
+        },
+        {
+          "type": "ppBlock",
           "named": true
         }
       ]
@@ -2963,6 +2987,10 @@
         {
           "type": "kVar",
           "named": true
+        },
+        {
+          "type": "ppBlock",
+          "named": true
         }
       ]
     }
@@ -3033,6 +3061,10 @@
           },
           {
             "type": "defProc",
+            "named": true
+          },
+          {
+            "type": "ppBlock",
             "named": true
           }
         ]
@@ -5685,6 +5717,10 @@
         {
           "type": "kImplementation",
           "named": true
+        },
+        {
+          "type": "ppBlock",
+          "named": true
         }
       ]
     }
@@ -5834,6 +5870,10 @@
         {
           "type": "kInterface",
           "named": true
+        },
+        {
+          "type": "ppBlock",
+          "named": true
         }
       ]
     }
@@ -5929,6 +5969,10 @@
           },
           {
             "type": "defProc",
+            "named": true
+          },
+          {
+            "type": "ppBlock",
             "named": true
           }
         ]
@@ -6101,6 +6145,10 @@
         {
           "type": "moduleName",
           "named": true
+        },
+        {
+          "type": "ppBlock",
+          "named": true
         }
       ]
     }
@@ -6239,6 +6287,149 @@
         },
         {
           "type": "kXor",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "ppBlock",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "asm",
+          "named": true
+        },
+        {
+          "type": "assignment",
+          "named": true
+        },
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "case",
+          "named": true
+        },
+        {
+          "type": "declConst",
+          "named": true
+        },
+        {
+          "type": "declConsts",
+          "named": true
+        },
+        {
+          "type": "declExports",
+          "named": true
+        },
+        {
+          "type": "declField",
+          "named": true
+        },
+        {
+          "type": "declLabels",
+          "named": true
+        },
+        {
+          "type": "declProc",
+          "named": true
+        },
+        {
+          "type": "declProp",
+          "named": true
+        },
+        {
+          "type": "declType",
+          "named": true
+        },
+        {
+          "type": "declTypes",
+          "named": true
+        },
+        {
+          "type": "declUses",
+          "named": true
+        },
+        {
+          "type": "declVar",
+          "named": true
+        },
+        {
+          "type": "declVars",
+          "named": true
+        },
+        {
+          "type": "defProc",
+          "named": true
+        },
+        {
+          "type": "for",
+          "named": true
+        },
+        {
+          "type": "foreach",
+          "named": true
+        },
+        {
+          "type": "goto",
+          "named": true
+        },
+        {
+          "type": "if",
+          "named": true
+        },
+        {
+          "type": "ifElse",
+          "named": true
+        },
+        {
+          "type": "ppBlock",
+          "named": true
+        },
+        {
+          "type": "ppElse",
+          "named": true
+        },
+        {
+          "type": "ppEndIf",
+          "named": true
+        },
+        {
+          "type": "ppIf",
+          "named": true
+        },
+        {
+          "type": "raise",
+          "named": true
+        },
+        {
+          "type": "repeat",
+          "named": true
+        },
+        {
+          "type": "statement",
+          "named": true
+        },
+        {
+          "type": "try",
+          "named": true
+        },
+        {
+          "type": "varDef",
+          "named": true
+        },
+        {
+          "type": "while",
+          "named": true
+        },
+        {
+          "type": "with",
           "named": true
         }
       ]
@@ -6767,6 +6958,10 @@
         {
           "type": "moduleName",
           "named": true
+        },
+        {
+          "type": "ppBlock",
+          "named": true
         }
       ]
     }
@@ -7204,6 +7399,10 @@
         },
         {
           "type": "library",
+          "named": true
+        },
+        {
+          "type": "ppBlock",
           "named": true
         },
         {

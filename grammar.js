@@ -309,6 +309,24 @@ module.exports = grammar({
 		// make sense, but for Treesitter it does), so we need another conflict
 		// here.
 		//...enable_if(lambda, [ $.lambda ]),
+		// ppBlock can appear in statement contexts; `;` inside ppBlock is
+		// ambiguous with the `;` that separates statements.
+		[$._statement, $.ppBlock],
+		// ppBlock in declaration contexts causes ambiguity with var/type/const
+		// section keywords that can also start statements or decl items.
+		[$.varAssignDef, $.varDef, $.declVars],
+		[$._ref, $._genericName],
+		[$._ref, $._genericName, $.declConst],
+		[$.defProc, $.ppBlock],
+		[$.exprBrackets, $.rttiAttributes],
+		[$._expr],
+		[$._expr, $.rttiAttributes],
+		[$._genericName, $.declConst],
+		[$.varDef, $.type],
+		[$.declVar, $.declField],
+		[$._declClass],
+		[$.declVar, $.declConst, $.declField],
+		[$.declVar, $.declConst],
 	],
 
 	rules: {
@@ -377,7 +395,7 @@ module.exports = grammar({
 		label:           $ => seq($.identifier, ':'),
 		caseLabel:       $ => seq(delimited1(choice($._expr, $.range)), ':'),
 
-		_statements:     $ => repeat1(choice($.varDef, $._statement,  $.label)),
+		_statements:     $ => repeat1(choice($.varDef, $._statement, $.label, $.ppBlock)),
 		_statementsTr:   $ => seq(
 			repeat(choice($._statement, $.label)),
 			choice(tr($,'_statement'), $._statement)
@@ -618,6 +636,7 @@ module.exports = grammar({
 			$.declTypes, $.declVars, $.declConsts, $.defProc,
 			alias($.declProcFwd, $.declProc),
 			$.declLabels, $.declUses, $.declExports,
+			$.ppBlock,
 
 			// Not actually valid syntax, but helps the parser recover:
 			prec(-1,$.blockTr)
@@ -648,10 +667,12 @@ module.exports = grammar({
 		_declarations:   $ => repeat1(choice(
 			$.declTypes, $.declVars, $.declConsts, $.declProc, $.declProp,
 			alias($.declProcFwd, $.declProc),
-			$.declUses, $.declLabels, $.declExports
+			$.declUses, $.declLabels, $.declExports,
+			$.ppBlock
 		)),
 		_classDeclarations: $ => repeat1(choice(
-			$.declTypes, $.declVars, $.declConsts, $.declProc, $.declProp
+			$.declTypes, $.declVars, $.declConsts, $.declProc, $.declProp,
+			$.ppBlock
 		)),
 
 		defaultValue:    $ => seq($.kEq, $._initializer),
@@ -689,19 +710,19 @@ module.exports = grammar({
 
 		declTypes:       $ => seq(
 			$.kType,
-			repeat($.declType)
+			repeat(choice($.declType, $.ppBlock))
 		),
 
 		declVars:        $ => seq(
 			optional($.kClass),
 			choice($.kVar, $.kThreadvar),
-			repeat($.declVar)
+			repeat(choice($.declVar, $.ppBlock))
 		),
 
 		declConsts:      $ => seq(
 			optional($.kClass),
 			choice($.kConst, $.kResourcestring),
-			repeat($.declConst),
+			repeat(choice($.declConst, $.ppBlock)),
 		),
 
 		// Declarations
@@ -840,7 +861,7 @@ module.exports = grammar({
 			optional($._classDeclarations)
 		),
 
-		_declFields:     $ => repeat1($.declField),
+		_declFields:     $ => repeat1(choice($.declField, $.ppBlock)),
 
 		declField:       $ =>  seq(
 			...enable_if(rtti, optional($.rttiAttributes)),

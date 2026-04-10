@@ -2472,6 +2472,10 @@
           {
             "type": "SYMBOL",
             "name": "label"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "ppBlock"
           }
         ]
       }
@@ -4720,6 +4724,10 @@
           "name": "declExports"
         },
         {
+          "type": "SYMBOL",
+          "name": "ppBlock"
+        },
+        {
           "type": "PREC",
           "value": -1,
           "content": {
@@ -5061,6 +5069,10 @@
           {
             "type": "SYMBOL",
             "name": "declExports"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "ppBlock"
           }
         ]
       }
@@ -5089,6 +5101,10 @@
           {
             "type": "SYMBOL",
             "name": "declProp"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "ppBlock"
           }
         ]
       }
@@ -5549,8 +5565,17 @@
         {
           "type": "REPEAT",
           "content": {
-            "type": "SYMBOL",
-            "name": "declType"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "declType"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "ppBlock"
+              }
+            ]
           }
         }
       ]
@@ -5586,8 +5611,17 @@
         {
           "type": "REPEAT",
           "content": {
-            "type": "SYMBOL",
-            "name": "declVar"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "declVar"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "ppBlock"
+              }
+            ]
           }
         }
       ]
@@ -5623,8 +5657,17 @@
         {
           "type": "REPEAT",
           "content": {
-            "type": "SYMBOL",
-            "name": "declConst"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "declConst"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "ppBlock"
+              }
+            ]
           }
         }
       ]
@@ -7000,8 +7043,17 @@
     "_declFields": {
       "type": "REPEAT1",
       "content": {
-        "type": "SYMBOL",
-        "name": "declField"
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "declField"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "ppBlock"
+          }
+        ]
       }
     },
     "declField": {
@@ -10004,6 +10056,63 @@
     ],
     [
       "declTypes"
+    ],
+    [
+      "_statement",
+      "ppBlock"
+    ],
+    [
+      "varAssignDef",
+      "varDef",
+      "declVars"
+    ],
+    [
+      "_ref",
+      "_genericName"
+    ],
+    [
+      "_ref",
+      "_genericName",
+      "declConst"
+    ],
+    [
+      "defProc",
+      "ppBlock"
+    ],
+    [
+      "exprBrackets",
+      "rttiAttributes"
+    ],
+    [
+      "_expr"
+    ],
+    [
+      "_expr",
+      "rttiAttributes"
+    ],
+    [
+      "_genericName",
+      "declConst"
+    ],
+    [
+      "varDef",
+      "type"
+    ],
+    [
+      "declVar",
+      "declField"
+    ],
+    [
+      "_declClass"
+    ],
+    [
+      "declVar",
+      "declConst",
+      "declField"
+    ],
+    [
+      "declVar",
+      "declConst"
     ]
   ],
   "precedences": [],
