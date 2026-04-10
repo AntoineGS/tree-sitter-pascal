@@ -472,3 +472,221 @@ end.
       (kImplementation))
     (kEnd)
     (kEndDot)))
+
+===
+ppBlock in var section
+===
+
+var
+  x: Integer;
+  {$IFDEF WIN}
+  y: Integer;
+  {$ENDIF}
+
+---
+
+(root
+  (declVars
+    (kVar)
+    (declVar
+      name: (identifier)
+      type: (type
+        (typeref
+          (identifier)))))
+  (ppBlock
+    (ppIf)
+    (declVar
+      name: (identifier)
+      type: (type
+        (typeref
+          (identifier))))
+    (ppEndIf)))
+
+===
+ppBlock in const section with ELSE
+===
+
+const
+  {$IFDEF WIN}
+  MyConst: Integer = 1;
+  {$ELSE}
+  MyConst: Integer = 2;
+  {$ENDIF}
+
+---
+
+(root
+  (declConsts
+    (kConst))
+  (ppBlock
+    (ppIf)
+    (declVar
+      name: (identifier)
+      type: (type
+        (typeref
+          (identifier)))
+      defaultValue: (defaultValue
+        (kEq)
+        (literalNumber)))
+    (ppElse)
+    (declVar
+      name: (identifier)
+      type: (type
+        (typeref
+          (identifier)))
+      defaultValue: (defaultValue
+        (kEq)
+        (literalNumber)))
+    (ppEndIf)))
+
+===
+ppBlock in statements (falls through to ppDirective extras)
+===
+
+begin
+  {$HINTS OFF}
+  x := 1;
+  {$HINTS ON}
+end
+
+---
+
+(root
+  (blockTr
+    (kBegin)
+    (ppDirective)
+    (assignment
+      lhs: (identifier)
+      operator: (kAssign)
+      rhs: (literalNumber))
+    (ppDirective)
+    (kEnd)))
+
+===
+ppBlock in class fields
+===
+
+type
+  TFoo = class
+  private
+    FBar: Integer;
+    {$IFDEF WIN}
+    FWin: Integer;
+    {$ENDIF}
+  end;
+
+---
+
+(root
+  (declTypes
+    (kType)
+    (declType
+      name: (identifier)
+      (kEq)
+      type: (declClass
+        (kClass)
+        (declSection
+          (kPrivate)
+          (declField
+            name: (identifier)
+            type: (type
+              (typeref
+                (identifier))))
+          (ppBlock
+            (ppIf)
+            (declVar
+              name: (identifier)
+              type: (type
+                (typeref
+                  (identifier))))
+            (ppEndIf)))
+        (kEnd)))))
+
+===
+Nested ppBlock in var section
+===
+
+var
+  {$IFDEF WIN}
+  x: Integer;
+  {$IFDEF WIN64}
+  y: Integer;
+  {$ENDIF}
+  {$ENDIF}
+
+---
+
+(root
+  (declVars
+    (kVar))
+  (ppBlock
+    (ppIf)
+    (declVar
+      name: (identifier)
+      type: (type
+        (typeref
+          (identifier))))
+    (ppBlock
+      (ppIf)
+      (declVar
+        name: (identifier)
+        type: (type
+          (typeref
+            (identifier))))
+      (ppEndIf))
+    (ppEndIf)))
+
+===
+ppBlock in interface declarations
+===
+
+unit a;
+interface
+{$IFDEF WIN}
+var
+  x: Integer;
+{$ENDIF}
+implementation
+end.
+
+---
+
+(root
+  (unit
+    (kUnit)
+    (moduleName
+      (identifier))
+    (interface
+      (kInterface)
+      (ppBlock
+        (ppIf)
+        (varDef
+          (kVar)
+          (identifier)
+          type: (typeref
+            (identifier)))
+        (ppEndIf)))
+    (implementation
+      (kImplementation))
+    (kEnd)
+    (kEndDot)))
+
+===
+Standalone ppDirective remains ppDirective extra
+===
+
+{$R *.dfm}
+var
+  x: Integer;
+
+---
+
+(root
+  (ppDirective)
+  (declVars
+    (kVar)
+    (declVar
+      name: (identifier)
+      type: (type
+        (typeref
+          (identifier))))))
