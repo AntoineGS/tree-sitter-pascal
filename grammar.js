@@ -101,6 +101,23 @@ function pp($, ...rule) {
 	);
 }
 
+// Preprocessor block wrapper for repeat contexts.
+// Generates a ppBlock node with structured ppIf/ppElse/ppEndIf children
+// wrapping the given content choices. Used in _declarations, _statements, etc.
+function ppIn($, ...contentChoices) {
+	if (!use_pp)
+		return choice(...contentChoices); // fallback: just the content
+	return seq(
+		alias(token(prec(5, /\{\$(ifdef|ifndef|if)([^a-zA-Z_}][^}]*)?\}/i)), $.ppIf),
+		repeat(choice(...contentChoices)),
+		repeat(seq(
+			alias(token(prec(5, /\{\$(elseif|else)([^a-zA-Z_}][^}]*)?\}/i)), $.ppElse),
+			repeat(choice(...contentChoices))
+		)),
+		alias(token(prec(5, /\{\$(endif|ifend)([^a-zA-Z_}][^}]*)?\}/i)), $.ppEndIf)
+	);
+}
+
 // tr = Trailing
 // Return the trailing equivalent of a rule, aliased to the non-trailing version.
 const tr = ($,rule) =>
@@ -653,6 +670,20 @@ module.exports = grammar({
 				repeat(choice($.moduleName, $.ppUsesBlock, ','))
 			)),
 			alias(token(prec(5, /\{\$(endif|ifend)([^a-zA-Z_}][^}]*)?\}/i)), $.ppEndIf)
+		),
+		ppBlock: $ => ppIn($,
+			// Declaration items
+			$.declType, $.declVar, $.declConst, $.declProc, $.declProp,
+			alias($.declProcFwd, $.declProc), $.declField,
+			// Section-level items
+			$.declTypes, $.declVars, $.declConsts, $.defProc,
+			$.declUses, $.declLabels, $.declExports,
+			// Statement items
+			$._statement,
+			// Nested ppBlock
+			$.ppBlock,
+			// Punctuation between items
+			';', ','
 		),
 		declExports:     $ => seq($.kExports, delimited($.declExport), ';'),
 
