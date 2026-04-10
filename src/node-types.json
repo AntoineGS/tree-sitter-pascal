@@ -8562,8 +8562,7 @@
   },
   {
     "type": "comment",
-    "named": true,
-    "extra": true
+    "named": true
   },
   {
     "type": "identifier",
@@ -9191,8 +9190,7 @@
   },
   {
     "type": "ppDirective",
-    "named": true,
-    "extra": true
+    "named": true
   },
   {
     "type": "ppElse",
