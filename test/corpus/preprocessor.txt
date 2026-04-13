@@ -597,6 +597,146 @@ end;
       (kEnd))))
 
 ===
+ppFragment in function return type (pattern A)
+===
+
+function Foo: {$IFDEF X}AnsiString{$ELSE}string{$ENDIF};
+begin
+end;
+
+---
+
+(root
+  (defProc
+    (declProc
+      (kProcedure)
+      (identifier)
+      (type
+        (ppFragment)))
+    (block
+      (kBegin)
+      (kEnd))))
+
+===
+ppFragment as assignment LHS prefix (pattern B)
+===
+
+procedure a;
+begin
+  {$ifdef X}FormatSettings.{$endif}DecimalSeparator := '.';
+end;
+
+---
+
+(root
+  (defProc
+    (declProc
+      (kProcedure)
+      (identifier))
+    (block
+      (kBegin)
+      (assignment
+        (ppFragment)
+        (kAssign)
+        (literalString))
+      (kEnd))))
+
+===
+ppFragment wrapping whole statement on one line (pattern C)
+===
+
+procedure a;
+var x: integer;
+begin
+  {$IFDEF DEBUG}x := 1;{$ENDIF}
+end;
+
+---
+
+(root
+  (defProc
+    (declProc
+      (kProcedure)
+      (identifier))
+    (declVars
+      (kVar)
+      (declVar
+        (identifier)
+        (type
+          (typeref
+            (identifier)))))
+    (block
+      (kBegin)
+      (ppFragment)
+      (kEnd))))
+
+===
+ppFragment wrapping cast in expression (pattern D)
+===
+
+procedure a;
+var x: string;
+begin
+  x := {$IFDEF Y}AnsiString(v){$ELSE}v{$ENDIF};
+end;
+
+---
+
+(root
+  (defProc
+    (declProc
+      (kProcedure)
+      (identifier))
+    (declVars
+      (kVar)
+      (declVar
+        (identifier)
+        (type
+          (typeref
+            (identifier)))))
+    (block
+      (kBegin)
+      (assignment
+        (identifier)
+        (kAssign)
+        (ppFragment))
+      (kEnd))))
+
+===
+ppFragment in exception type of on clause (pattern E)
+===
+
+procedure a;
+begin
+  try
+  except
+    on E: {$IFDEF X}System.{$ENDIF}SysUtils.Exception do
+      ;
+  end;
+end;
+
+---
+
+(root
+  (defProc
+    (declProc
+      (kProcedure)
+      (identifier))
+    (block
+      (kBegin)
+      (try
+        (kTry)
+        (kExcept)
+        (exceptionHandler
+          (kOn)
+          (identifier)
+          (type
+            (ppFragment))
+          (kDo))
+        (kEnd))
+      (kEnd))))
+
+===
 ppBlock in class fields
 ===
 
