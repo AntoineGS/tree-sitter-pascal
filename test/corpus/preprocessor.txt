@@ -597,7 +597,7 @@ end;
       (kEnd))))
 
 ===
-ppFragment in function return type (pattern A)
+ppFragment in function return type
 ===
 
 function Foo: {$IFDEF X}AnsiString{$ELSE}string{$ENDIF};
@@ -609,16 +609,15 @@ end;
 (root
   (defProc
     (declProc
-      (kProcedure)
+      (kFunction)
       (identifier)
-      (type
-        (ppFragment)))
+      (ppFragment))
     (block
       (kBegin)
       (kEnd))))
 
 ===
-ppFragment as assignment LHS prefix (pattern B)
+ppFragment as assignment LHS prefix
 ===
 
 procedure a;
@@ -642,11 +641,10 @@ end;
       (kEnd))))
 
 ===
-ppFragment wrapping whole statement on one line (pattern C)
+ppFragment wrapping whole statement
 ===
 
 procedure a;
-var x: integer;
 begin
   {$IFDEF DEBUG}x := 1;{$ENDIF}
 end;
@@ -658,24 +656,16 @@ end;
     (declProc
       (kProcedure)
       (identifier))
-    (declVars
-      (kVar)
-      (declVar
-        (identifier)
-        (type
-          (typeref
-            (identifier)))))
     (block
       (kBegin)
       (ppFragment)
       (kEnd))))
 
 ===
-ppFragment wrapping cast in expression (pattern D)
+ppFragment wrapping cast in expression
 ===
 
 procedure a;
-var x: string;
 begin
   x := {$IFDEF Y}AnsiString(v){$ELSE}v{$ENDIF};
 end;
@@ -687,13 +677,6 @@ end;
     (declProc
       (kProcedure)
       (identifier))
-    (declVars
-      (kVar)
-      (declVar
-        (identifier)
-        (type
-          (typeref
-            (identifier)))))
     (block
       (kBegin)
       (assignment
@@ -703,7 +686,7 @@ end;
       (kEnd))))
 
 ===
-ppFragment in exception type of on clause (pattern E)
+ppFragment in exception handler type
 ===
 
 procedure a;
