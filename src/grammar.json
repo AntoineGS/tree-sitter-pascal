@@ -10124,7 +10124,12 @@
     ]
   ],
   "precedences": [],
-  "externals": [],
+  "externals": [
+    {
+      "type": "SYMBOL",
+      "name": "ppFragment"
+    }
+  ],
   "inline": [],
   "supertypes": []
 }
