@@ -962,3 +962,48 @@ end;
       (statement
         (ppFragmentExpr))
       (kEnd))))
+
+===
+Uses clause whole body wrapped in directive with semi inside branches
+===
+
+unit Foo;
+interface
+uses
+{$IFDEF VER270}
+  WinAPI.Windows, SysUtils;
+{$ELSE}
+  Windows, SysUtils;
+{$ENDIF}
+implementation
+end.
+
+---
+
+(root
+  (unit
+    (kUnit)
+    (moduleName
+      (identifier))
+    (interface
+      (kInterface)
+      (declUses
+        (kUses)
+        (ppUsesBlockWithSemi
+          (ppIf)
+          (moduleName
+            (identifier)
+            (kDot)
+            (identifier))
+          (moduleName
+            (identifier))
+          (ppElse)
+          (moduleName
+            (identifier))
+          (moduleName
+            (identifier))
+          (ppEndIf))))
+    (implementation
+      (kImplementation))
+    (kEnd)
+    (kEndDot)))

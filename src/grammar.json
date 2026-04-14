@@ -5158,15 +5158,29 @@
           "name": "kUses"
         },
         {
-          "type": "REPEAT1",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_usesClauseEntry"
-          }
-        },
-        {
-          "type": "STRING",
-          "value": ";"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "REPEAT1",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_usesClauseEntry"
+                  }
+                },
+                {
+                  "type": "STRING",
+                  "value": ";"
+                }
+              ]
+            },
+            {
+              "type": "SYMBOL",
+              "name": "ppUsesBlockWithSemi"
+            }
+          ]
         }
       ]
     },
@@ -5268,6 +5282,118 @@
                     }
                   ]
                 }
+              }
+            ]
+          }
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "TOKEN",
+            "content": {
+              "type": "PREC",
+              "value": 5,
+              "content": {
+                "type": "PATTERN",
+                "value": "\\{\\$(endif|ifend)([^a-zA-Z_}][^}]*)?\\}",
+                "flags": "i"
+              }
+            }
+          },
+          "named": true,
+          "value": "ppEndIf"
+        }
+      ]
+    },
+    "ppUsesBlockWithSemi": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "TOKEN",
+            "content": {
+              "type": "PREC",
+              "value": 5,
+              "content": {
+                "type": "PATTERN",
+                "value": "\\{\\$(ifdef|ifndef|if)([^a-zA-Z_}][^}]*)?\\}",
+                "flags": "i"
+              }
+            }
+          },
+          "named": true,
+          "value": "ppIf"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "moduleName"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "ppUsesBlock"
+              },
+              {
+                "type": "STRING",
+                "value": ","
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": ";"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "TOKEN",
+                  "content": {
+                    "type": "PREC",
+                    "value": 5,
+                    "content": {
+                      "type": "PATTERN",
+                      "value": "\\{\\$(elseif|else)([^a-zA-Z_}][^}]*)?\\}",
+                      "flags": "i"
+                    }
+                  }
+                },
+                "named": true,
+                "value": "ppElse"
+              },
+              {
+                "type": "REPEAT",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "moduleName"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "ppUsesBlock"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ","
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "STRING",
+                "value": ";"
               }
             ]
           }

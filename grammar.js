@@ -683,7 +683,10 @@ module.exports = grammar({
 
 		// Declaration sections
 
-		declUses:        $ => seq($.kUses, repeat1($._usesClauseEntry), ';'),
+		declUses:        $ => seq($.kUses, choice(
+			seq(repeat1($._usesClauseEntry), ';'),
+			$.ppUsesBlockWithSemi
+		)),
 
 		_usesClauseEntry: $ => choice($.moduleName, $.ppUsesBlock, ','),
 
@@ -693,6 +696,16 @@ module.exports = grammar({
 			repeat(seq(
 				alias(token(prec(5, /\{\$(elseif|else)([^a-zA-Z_}][^}]*)?\}/i)), $.ppElse),
 				repeat(choice($.moduleName, $.ppUsesBlock, ','))
+			)),
+			alias(token(prec(5, /\{\$(endif|ifend)([^a-zA-Z_}][^}]*)?\}/i)), $.ppEndIf)
+		),
+
+		ppUsesBlockWithSemi: $ => seq(
+			alias(token(prec(5, /\{\$(ifdef|ifndef|if)([^a-zA-Z_}][^}]*)?\}/i)), $.ppIf),
+			repeat(choice($.moduleName, $.ppUsesBlock, ',')), ';',
+			repeat(seq(
+				alias(token(prec(5, /\{\$(elseif|else)([^a-zA-Z_}][^}]*)?\}/i)), $.ppElse),
+				repeat(choice($.moduleName, $.ppUsesBlock, ',')), ';'
 			)),
 			alias(token(prec(5, /\{\$(endif|ifend)([^a-zA-Z_}][^}]*)?\}/i)), $.ppEndIf)
 		),
