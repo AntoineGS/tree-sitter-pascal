@@ -940,3 +940,25 @@ end;
         (kAssign)
         (literalNumber))
       (kEnd))))
+
+===
+ppFragmentExpr wins when body has no top-level semicolon
+===
+
+procedure a;
+begin
+  {$IFDEF DEBUG}Foo{$ENDIF};
+end;
+
+---
+
+(root
+  (defProc
+    (declProc
+      (kProcedure)
+      (identifier))
+    (block
+      (kBegin)
+      (statement
+        (ppFragmentExpr))
+      (kEnd))))
