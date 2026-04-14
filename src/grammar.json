@@ -1133,10 +1133,6 @@
           ]
         },
         {
-          "type": "SYMBOL",
-          "name": "ppFragment"
-        },
-        {
           "type": "ALIAS",
           "content": {
             "type": "SYMBOL",
@@ -2128,10 +2124,6 @@
               "name": "varDef"
             }
           ]
-        },
-        {
-          "type": "SYMBOL",
-          "name": "ppFragment"
         },
         {
           "type": "ALIAS",
@@ -10102,19 +10094,6 @@
     [
       "defProc",
       "ppBlock"
-    ],
-    [
-      "_ref",
-      "_statement"
-    ],
-    [
-      "_ref",
-      "_statementTr"
-    ],
-    [
-      "_ref",
-      "_statement",
-      "_statementTr"
     ],
     [
       "exprBrackets",
