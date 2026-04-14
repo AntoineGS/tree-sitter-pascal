@@ -1230,6 +1230,10 @@
           "named": true
         },
         {
+          "type": "ppDeclSection",
+          "named": true
+        },
+        {
           "type": "ppFragmentExpr",
           "named": true
         }
@@ -1651,6 +1655,10 @@
           "named": true
         },
         {
+          "type": "ppDeclSection",
+          "named": true
+        },
+        {
           "type": "typeref",
           "named": true
         }
@@ -1748,6 +1756,10 @@
         },
         {
           "type": "ppBlock",
+          "named": true
+        },
+        {
+          "type": "ppDeclSection",
           "named": true
         }
       ]
@@ -2828,6 +2840,10 @@
         },
         {
           "type": "ppUsesBlock",
+          "named": true
+        },
+        {
+          "type": "ppUsesBlockWithSemi",
           "named": true
         }
       ]
@@ -6616,7 +6632,113 @@
     }
   },
   {
+    "type": "ppDeclSection",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "declConsts",
+          "named": true
+        },
+        {
+          "type": "declField",
+          "named": true
+        },
+        {
+          "type": "declProc",
+          "named": true
+        },
+        {
+          "type": "declProp",
+          "named": true
+        },
+        {
+          "type": "declTypes",
+          "named": true
+        },
+        {
+          "type": "declVars",
+          "named": true
+        },
+        {
+          "type": "kOptional",
+          "named": true
+        },
+        {
+          "type": "kPrivate",
+          "named": true
+        },
+        {
+          "type": "kProtected",
+          "named": true
+        },
+        {
+          "type": "kPublic",
+          "named": true
+        },
+        {
+          "type": "kPublished",
+          "named": true
+        },
+        {
+          "type": "kRequired",
+          "named": true
+        },
+        {
+          "type": "kStrict",
+          "named": true
+        },
+        {
+          "type": "ppBlock",
+          "named": true
+        },
+        {
+          "type": "ppEndIf",
+          "named": true
+        },
+        {
+          "type": "ppIf",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "ppUsesBlock",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "moduleName",
+          "named": true
+        },
+        {
+          "type": "ppElse",
+          "named": true
+        },
+        {
+          "type": "ppEndIf",
+          "named": true
+        },
+        {
+          "type": "ppIf",
+          "named": true
+        },
+        {
+          "type": "ppUsesBlock",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "ppUsesBlockWithSemi",
     "named": true,
     "fields": {},
     "children": {

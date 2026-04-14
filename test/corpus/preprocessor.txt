@@ -1007,3 +1007,68 @@ end.
       (kImplementation))
     (kEnd)
     (kEndDot)))
+
+===
+Class body with directive-wrapped visibility specifier
+===
+
+unit Foo;
+interface
+type
+  TFoo = class(TBase)
+  public
+    procedure Assign(Source: TPersistent);
+  {$IFDEF UNITTEST}
+  published
+  {$ENDIF}
+    property Bar: integer read FBar;
+  end;
+implementation
+end.
+
+---
+
+(root
+  (unit
+    (kUnit)
+    (moduleName
+      (identifier))
+    (interface
+      (kInterface)
+      (declTypes
+        (kType)
+        (declType
+          (identifier)
+          (kEq)
+          (declClass
+            (kClass)
+            (typeref
+              (identifier))
+            (declSection
+              (kPublic)
+              (declProc
+                (kProcedure)
+                (identifier)
+                (declArgs
+                  (declArg
+                    (identifier)
+                    (type
+                      (typeref
+                        (identifier)))))))
+            (ppDeclSection
+              (ppIf)
+              (kPublished)
+              (ppEndIf)
+              (declProp
+                (kProperty)
+                (identifier)
+                (type
+                  (typeref
+                    (identifier)))
+                (kRead)
+                (identifier)))
+            (kEnd)))))
+    (implementation
+      (kImplementation))
+    (kEnd)
+    (kEndDot)))

@@ -7114,8 +7114,17 @@
         {
           "type": "REPEAT",
           "content": {
-            "type": "SYMBOL",
-            "name": "declSection"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "declSection"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "ppDeclSection"
+              }
+            ]
           }
         },
         {
@@ -7167,6 +7176,98 @@
               "name": "kOptional"
             }
           ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_declFields"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_classDeclarations"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "ppDeclSection": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "TOKEN",
+            "content": {
+              "type": "PREC",
+              "value": 5,
+              "content": {
+                "type": "PATTERN",
+                "value": "\\{\\$(ifdef|ifndef|if)([^a-zA-Z_}][^}]*)?\\}",
+                "flags": "i"
+              }
+            }
+          },
+          "named": true,
+          "value": "ppIf"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "kStrict"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_visibility"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "kRequired"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "kOptional"
+            }
+          ]
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "TOKEN",
+            "content": {
+              "type": "PREC",
+              "value": 5,
+              "content": {
+                "type": "PATTERN",
+                "value": "\\{\\$(endif|ifend)([^a-zA-Z_}][^}]*)?\\}",
+                "flags": "i"
+              }
+            }
+          },
+          "named": true,
+          "value": "ppEndIf"
         },
         {
           "type": "CHOICE",
@@ -10267,6 +10368,12 @@
     [
       "declVar",
       "declConst"
+    ],
+    [
+      "declSection"
+    ],
+    [
+      "ppDeclSection"
     ]
   ],
   "precedences": [],

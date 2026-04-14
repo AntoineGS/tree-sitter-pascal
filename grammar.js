@@ -329,6 +329,8 @@ module.exports = grammar({
 		[$._declClass],
 		[$.declVar, $.declConst, $.declField],
 		[$.declVar, $.declConst],
+		[$.declSection],
+		[$.ppDeclSection],
 	],
 
 	rules: {
@@ -866,7 +868,7 @@ module.exports = grammar({
 		_declClass:      $ => seq(
 			optional($._declFields),
 			optional($._classDeclarations),
-			repeat($.declSection),
+			repeat(choice($.declSection, $.ppDeclSection)),
 			optional($.declVariant),
 			$.kEnd
 		),
@@ -874,6 +876,15 @@ module.exports = grammar({
 		declSection:     $ => seq(
 			optional($.kStrict),
 			choice($._visibility, ...enable_if(objc, $.kRequired, $.kOptional)),
+			optional($._declFields),
+			optional($._classDeclarations)
+		),
+
+		ppDeclSection:   $ => seq(
+			alias(token(prec(5, /\{\$(ifdef|ifndef|if)([^a-zA-Z_}][^}]*)?\}/i)), $.ppIf),
+			optional($.kStrict),
+			choice($._visibility, ...enable_if(objc, $.kRequired, $.kOptional)),
+			alias(token(prec(5, /\{\$(endif|ifend)([^a-zA-Z_}][^}]*)?\}/i)), $.ppEndIf),
 			optional($._declFields),
 			optional($._classDeclarations)
 		),
