@@ -263,6 +263,7 @@ function statements(trailing) {
 			...semicolon,
 			seq($.assignment, ...semicolon),
 			seq($.varDef, ...semicolon),
+			$.ppFragment,
 			alias($[rn('statement')], $.statement),
 			alias($[rn('if')],        $.if),
 			alias($[rn('ifElse')],    $.ifElse),
@@ -320,6 +321,9 @@ module.exports = grammar({
 		[$._ref, $._genericName],
 		[$._ref, $._genericName, $.declConst],
 		[$.defProc, $.ppBlock],
+		[$._ref, $._statement],
+		[$._ref, $._statementTr],
+		[$._ref, $._statement, $._statementTr],
 		[$.exprBrackets, $.rttiAttributes],
 		[$._expr],
 		[$._expr, $.rttiAttributes],
@@ -444,7 +448,8 @@ module.exports = grammar({
 			alias($.exprDeref, $.exprUnary),
 			alias($.exprAs, $.exprBinary),
 			...enable_if(templates, $.exprTpl),
-			...enable_if(lambda, $.lambda)
+			...enable_if(lambda, $.lambda),
+			$.ppFragment,
 		),
 
 		lambda:          $ => seq(
@@ -578,6 +583,7 @@ module.exports = grammar({
 			$.identifier, $.typerefDot,
 			...enable_if(templates, $.typerefTpl),
 			$.typerefPtr,
+			$.ppFragment,
 		),
 
 		typerefDot:      $ => op.infix(1,$._typeref, $.kDot, $._typeref),

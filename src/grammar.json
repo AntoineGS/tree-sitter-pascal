@@ -1133,6 +1133,10 @@
           ]
         },
         {
+          "type": "SYMBOL",
+          "name": "ppFragment"
+        },
+        {
           "type": "ALIAS",
           "content": {
             "type": "SYMBOL",
@@ -2126,6 +2130,10 @@
           ]
         },
         {
+          "type": "SYMBOL",
+          "name": "ppFragment"
+        },
+        {
           "type": "ALIAS",
           "content": {
             "type": "SYMBOL",
@@ -2667,6 +2675,10 @@
         {
           "type": "SYMBOL",
           "name": "lambda"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "ppFragment"
         }
       ]
     },
@@ -4231,6 +4243,10 @@
         {
           "type": "SYMBOL",
           "name": "typerefPtr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "ppFragment"
         }
       ]
     },
@@ -10086,6 +10102,19 @@
     [
       "defProc",
       "ppBlock"
+    ],
+    [
+      "_ref",
+      "_statement"
+    ],
+    [
+      "_ref",
+      "_statementTr"
+    ],
+    [
+      "_ref",
+      "_statement",
+      "_statementTr"
     ],
     [
       "exprBrackets",

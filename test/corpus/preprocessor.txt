@@ -207,13 +207,8 @@ end;
         (declArg
           (identifier)
           (type
-            (ppIf)
             (typeref
-              (identifier))
-            (ppElse)
-            (typeref
-              (identifier))
-            (ppEndIf)))))
+              (ppFragment))))))
     (block
       (kBegin)
       (kEnd))))
@@ -322,26 +317,16 @@ type
     (declVar
       (identifier)
       (type
-        (ppIf)
         (typeref
-          (identifier))
-        (ppElse)
-        (typeref
-          (identifier))
-        (ppEndIf))))
+          (ppFragment)))))
   (declTypes
     (kType)
     (declType
       (identifier)
       (kEq)
       (type
-        (ppIf)
         (typeref
-          (identifier))
-        (ppElse)
-        (typeref
-          (identifier))
-        (ppEndIf)))))
+          (ppFragment))))))
 
 ===
 Preprocessor directives in uses clause
@@ -611,7 +596,8 @@ end;
     (declProc
       (kFunction)
       (identifier)
-      (ppFragment))
+      (typeref
+        (ppFragment)))
     (block
       (kBegin)
       (kEnd))))
@@ -658,7 +644,8 @@ end;
       (identifier))
     (block
       (kBegin)
-      (ppFragment)
+      (statement
+        (ppFragment))
       (kEnd))))
 
 ===
@@ -713,7 +700,7 @@ end;
         (exceptionHandler
           (kOn)
           (identifier)
-          (type
+          (typeref
             (ppFragment))
           (kDo))
         (kEnd))
