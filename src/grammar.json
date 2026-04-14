@@ -2476,6 +2476,10 @@
           {
             "type": "SYMBOL",
             "name": "ppBlock"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "ppFragmentStmt"
           }
         ]
       }
@@ -2499,6 +2503,10 @@
               {
                 "type": "SYMBOL",
                 "name": "ppBlock"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "ppFragmentStmt"
               }
             ]
           }
@@ -2517,6 +2525,10 @@
             {
               "type": "SYMBOL",
               "name": "ppBlock"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "ppFragmentStmt"
             }
           ]
         }
@@ -10136,6 +10148,10 @@
     {
       "type": "SYMBOL",
       "name": "ppFragmentExpr"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "ppFragmentStmt"
     }
   ],
   "inline": [],

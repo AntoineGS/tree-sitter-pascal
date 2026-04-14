@@ -1,10 +1,13 @@
 // External scanner for tree-sitter-pascal.
 //
-// Recognizes mid-expression `{$ifdef ...}...{$endif}` directive pairs and
-// consumes the whole paired span as a single ppFragmentExpr token. Returns
-// false (letting the regex-based lexer handle the input) when the
-// directive is followed by whitespace/newline — that's the block-level
-// form handled by ppBlock / pp().
+// Recognizes single-line `{$ifdef ...}...{$endif}` directive pairs and
+// consumes the whole paired span as ONE opaque token — either
+// `ppFragmentExpr` (the default, valid in expression and typeref
+// positions) or `ppFragmentStmt` (when the body contains a top-level `;`
+// AND the grammar accepts a statement fragment at this position).
+// Returns false (letting the regex-based lexer handle the input) when
+// the directive is followed by whitespace/newline — that's the
+// block-level form handled by ppBlock / pp().
 
 #include "tree_sitter/parser.h"
 #include <ctype.h>
@@ -14,6 +17,7 @@
 
 typedef enum {
     PP_FRAGMENT_EXPR,
+    PP_FRAGMENT_STMT,
 } TokenType;
 
 static inline bool is_ascii_letter(int32_t c) {
@@ -79,7 +83,7 @@ bool tree_sitter_pascal_external_scanner_scan(
 ) {
     (void)payload;
 
-    if (!valid_symbols[PP_FRAGMENT_EXPR]) {
+    if (!valid_symbols[PP_FRAGMENT_EXPR] && !valid_symbols[PP_FRAGMENT_STMT]) {
         return false;
     }
 
@@ -117,6 +121,7 @@ bool tree_sitter_pascal_external_scanner_scan(
     // where ppFragmentExpr isn't grammatically valid, so no additional "mid-line
     // content" check is required.
     bool saw_newline = false;
+    bool saw_top_level_semi = false;
 
     // Walk forward to the matching `{$endif}` / `{$ifend}`, tracking depth
     // for nested `{$if*}` pairs.
@@ -128,6 +133,8 @@ bool tree_sitter_pascal_external_scanner_scan(
         if (lexer->lookahead != '{') {
             if (lexer->lookahead == '\n' || lexer->lookahead == '\r') {
                 saw_newline = true;
+            } else if (lexer->lookahead == ';' && depth == 1) {
+                saw_top_level_semi = true;
             }
             lexer->advance(lexer, false);
             continue;
@@ -159,6 +166,22 @@ bool tree_sitter_pascal_external_scanner_scan(
     }
 
     if (saw_newline) {
+        return false;
+    }
+
+    // Token selection: prefer PP_FRAGMENT_STMT when the body contains a
+    // top-level `;` AND the grammar accepts a statement fragment here.
+    // Otherwise fall through to PP_FRAGMENT_EXPR (today's behavior),
+    // including the trailing identifier-chain extension pass. Statement
+    // fragments are self-contained — their body ends at the closing
+    // `{$endif}` so there's nothing to absorb afterwards.
+    if (saw_top_level_semi && valid_symbols[PP_FRAGMENT_STMT]) {
+        lexer->mark_end(lexer);
+        lexer->result_symbol = PP_FRAGMENT_STMT;
+        return true;
+    }
+
+    if (!valid_symbols[PP_FRAGMENT_EXPR]) {
         return false;
     }
 

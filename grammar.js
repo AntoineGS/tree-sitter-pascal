@@ -285,7 +285,7 @@ function statements(trailing) {
 module.exports = grammar({
 	name: "pascal",
 
-	externals: $ => [$.ppFragmentExpr],
+	externals: $ => [$.ppFragmentExpr, $.ppFragmentStmt],
 
 	extras: $ => [$._space, $.comment, $.ppDirective],
 
@@ -397,10 +397,10 @@ module.exports = grammar({
 		label:           $ => seq($.identifier, ':'),
 		caseLabel:       $ => seq(delimited1(choice($._expr, $.range)), ':'),
 
-		_statements:     $ => repeat1(choice($.varDef, $._statement, $.label, $.ppBlock)),
+		_statements:     $ => repeat1(choice($.varDef, $._statement, $.label, $.ppBlock, $.ppFragmentStmt)),
 		_statementsTr:   $ => seq(
-			repeat(choice($._statement, $.label, $.ppBlock)),
-			choice(tr($,'_statement'), $._statement, $.ppBlock)
+			repeat(choice($._statement, $.label, $.ppBlock, $.ppFragmentStmt)),
+			choice(tr($,'_statement'), $._statement, $.ppBlock, $.ppFragmentStmt)
 		),
 
 		statements:      $ => $._statements,

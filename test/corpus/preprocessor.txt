@@ -582,7 +582,7 @@ end;
       (kEnd))))
 
 ===
-ppFragment in function return type
+ppFragmentExpr in function return type
 ===
 
 function Foo: {$IFDEF X}AnsiString{$ELSE}string{$ENDIF};
@@ -603,7 +603,7 @@ end;
       (kEnd))))
 
 ===
-ppFragment as assignment LHS prefix
+ppFragmentExpr as assignment LHS prefix
 ===
 
 procedure a;
@@ -627,7 +627,7 @@ end;
       (kEnd))))
 
 ===
-ppFragment wrapping whole statement
+ppFragmentStmt wrapping whole statement
 ===
 
 procedure a;
@@ -644,12 +644,11 @@ end;
       (identifier))
     (block
       (kBegin)
-      (statement
-        (ppFragmentExpr))
+      (ppFragmentStmt)
       (kEnd))))
 
 ===
-ppFragment wrapping cast in expression
+ppFragmentExpr wrapping cast in expression
 ===
 
 procedure a;
@@ -673,7 +672,7 @@ end;
       (kEnd))))
 
 ===
-ppFragment in exception handler type
+ppFragmentExpr in exception handler type
 ===
 
 procedure a;
@@ -909,4 +908,35 @@ end;
           (exprArgs
             (identifier)
             (ppFragmentExpr))))
+      (kEnd))))
+
+===
+ppFragmentStmt in non-trailing position
+===
+
+procedure a;
+begin
+  Foo := 1;
+  {$IFDEF DEBUG}FWSDebugLogs := True;{$ENDIF}
+  Bar := 2;
+end;
+
+---
+
+(root
+  (defProc
+    (declProc
+      (kProcedure)
+      (identifier))
+    (block
+      (kBegin)
+      (assignment
+        (identifier)
+        (kAssign)
+        (literalNumber))
+      (ppFragmentStmt)
+      (assignment
+        (identifier)
+        (kAssign)
+        (literalNumber))
       (kEnd))))

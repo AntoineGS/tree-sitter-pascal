@@ -381,6 +381,10 @@
           "named": true
         },
         {
+          "type": "ppFragmentStmt",
+          "named": true
+        },
+        {
           "type": "raise",
           "named": true
         },
@@ -469,6 +473,10 @@
         },
         {
           "type": "ppBlock",
+          "named": true
+        },
+        {
+          "type": "ppFragmentStmt",
           "named": true
         },
         {
@@ -644,6 +652,10 @@
         },
         {
           "type": "ppFragmentExpr",
+          "named": true
+        },
+        {
+          "type": "ppFragmentStmt",
           "named": true
         },
         {
@@ -4665,6 +4677,10 @@
           "named": true
         },
         {
+          "type": "ppFragmentStmt",
+          "named": true
+        },
+        {
           "type": "raise",
           "named": true
         },
@@ -5950,6 +5966,10 @@
         },
         {
           "type": "ppBlock",
+          "named": true
+        },
+        {
+          "type": "ppFragmentStmt",
           "named": true
         },
         {
@@ -7823,6 +7843,10 @@
           "named": true
         },
         {
+          "type": "ppFragmentStmt",
+          "named": true
+        },
+        {
           "type": "raise",
           "named": true
         },
@@ -9410,6 +9434,10 @@
   },
   {
     "type": "ppFragmentExpr",
+    "named": true
+  },
+  {
+    "type": "ppFragmentStmt",
     "named": true
   },
   {
