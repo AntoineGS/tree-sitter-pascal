@@ -109,13 +109,14 @@ bool tree_sitter_pascal_external_scanner_scan(
         return false;
     }
 
-    // Heuristic: the char immediately after `}` must be non-whitespace,
-    // non-newline. If it's whitespace, this is a block-level directive and
-    // the regex-based lexer will handle it.
-    int32_t next = lexer->lookahead;
-    if (next == 0 || is_space_or_newline(next)) {
-        return false;
-    }
+    // Track whether any newline appears inside the `{$if*}...{$endif}` span.
+    // A directive body that contains a newline is structural (block-level)
+    // and is handled by the regex-based lexer via `pp()` / `ppBlock`; fragments
+    // by definition fit on a single physical line. The `valid_symbols[PP_FRAGMENT]`
+    // gate at the top of this function already prevents firing in positions
+    // where ppFragment isn't grammatically valid, so no additional "mid-line
+    // content" check is required.
+    bool saw_newline = false;
 
     // Walk forward to the matching `{$endif}` / `{$ifend}`, tracking depth
     // for nested `{$if*}` pairs.
@@ -125,6 +126,9 @@ bool tree_sitter_pascal_external_scanner_scan(
             return false; // Unterminated fragment — give up, let regex handle it.
         }
         if (lexer->lookahead != '{') {
+            if (lexer->lookahead == '\n' || lexer->lookahead == '\r') {
+                saw_newline = true;
+            }
             lexer->advance(lexer, false);
             continue;
         }
@@ -152,6 +156,10 @@ bool tree_sitter_pascal_external_scanner_scan(
         if (!skip_to_close_brace(lexer)) {
             return false;
         }
+    }
+
+    if (saw_newline) {
+        return false;
     }
 
     // Extension pass: after the depth loop reaches 0 we're positioned

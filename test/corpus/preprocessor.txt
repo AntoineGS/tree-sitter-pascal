@@ -834,3 +834,79 @@ var
       type: (type
         (typeref
           (identifier))))))
+
+===
+Preprocessor fragment with space padding (const)
+===
+
+const
+  x = {$if 1} 100 {$else} 200 {$endif};
+
+---
+
+(root
+  (declConsts
+    (kConst)
+    (declConst
+      (identifier)
+      (defaultValue
+        (kEq)
+        (ppFragment)))))
+
+===
+Preprocessor fragment with space padding (assignment RHS)
+===
+
+procedure p;
+var n: integer;
+begin
+  n := {$if 1} 10 {$else} 200 {$endif};
+end;
+
+---
+
+(root
+  (defProc
+    (declProc
+      (kProcedure)
+      (identifier))
+    (declVars
+      (kVar)
+      (declVar
+        (identifier)
+        (type
+          (typeref
+            (identifier)))))
+    (block
+      (kBegin)
+      (assignment
+        (identifier)
+        (kAssign)
+        (ppFragment))
+      (kEnd))))
+
+===
+Preprocessor fragment with space padding (call argument)
+===
+
+procedure p;
+begin
+  f(a, {$if 1} 1 {$else} 2 {$endif});
+end;
+
+---
+
+(root
+  (defProc
+    (declProc
+      (kProcedure)
+      (identifier))
+    (block
+      (kBegin)
+      (statement
+        (exprCall
+          (identifier)
+          (exprArgs
+            (identifier)
+            (ppFragment))))
+      (kEnd))))
