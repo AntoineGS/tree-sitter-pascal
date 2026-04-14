@@ -285,7 +285,7 @@ function statements(trailing) {
 module.exports = grammar({
 	name: "pascal",
 
-	externals: $ => [$.ppFragment],
+	externals: $ => [$.ppFragmentExpr],
 
 	extras: $ => [$._space, $.comment, $.ppDirective],
 
@@ -445,7 +445,7 @@ module.exports = grammar({
 			alias($.exprAs, $.exprBinary),
 			...enable_if(templates, $.exprTpl),
 			...enable_if(lambda, $.lambda),
-			$.ppFragment,
+			$.ppFragmentExpr,
 		),
 
 		lambda:          $ => seq(
@@ -579,7 +579,7 @@ module.exports = grammar({
 			$.identifier, $.typerefDot,
 			...enable_if(templates, $.typerefTpl),
 			$.typerefPtr,
-			$.ppFragment,
+			$.ppFragmentExpr,
 		),
 
 		typerefDot:      $ => op.infix(1,$._typeref, $.kDot, $._typeref),

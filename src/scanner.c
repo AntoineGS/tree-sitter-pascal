@@ -1,7 +1,7 @@
 // External scanner for tree-sitter-pascal.
 //
 // Recognizes mid-expression `{$ifdef ...}...{$endif}` directive pairs and
-// consumes the whole paired span as a single ppFragment token. Returns
+// consumes the whole paired span as a single ppFragmentExpr token. Returns
 // false (letting the regex-based lexer handle the input) when the
 // directive is followed by whitespace/newline — that's the block-level
 // form handled by ppBlock / pp().
@@ -13,7 +13,7 @@
 #include <string.h>
 
 typedef enum {
-    PP_FRAGMENT,
+    PP_FRAGMENT_EXPR,
 } TokenType;
 
 static inline bool is_ascii_letter(int32_t c) {
@@ -79,7 +79,7 @@ bool tree_sitter_pascal_external_scanner_scan(
 ) {
     (void)payload;
 
-    if (!valid_symbols[PP_FRAGMENT]) {
+    if (!valid_symbols[PP_FRAGMENT_EXPR]) {
         return false;
     }
 
@@ -112,9 +112,9 @@ bool tree_sitter_pascal_external_scanner_scan(
     // Track whether any newline appears inside the `{$if*}...{$endif}` span.
     // A directive body that contains a newline is structural (block-level)
     // and is handled by the regex-based lexer via `pp()` / `ppBlock`; fragments
-    // by definition fit on a single physical line. The `valid_symbols[PP_FRAGMENT]`
+    // by definition fit on a single physical line. The `valid_symbols[PP_FRAGMENT_EXPR]`
     // gate at the top of this function already prevents firing in positions
-    // where ppFragment isn't grammatically valid, so no additional "mid-line
+    // where ppFragmentExpr isn't grammatically valid, so no additional "mid-line
     // content" check is required.
     bool saw_newline = false;
 
@@ -169,7 +169,7 @@ bool tree_sitter_pascal_external_scanner_scan(
     // where the text after the closing directive forms one logical
     // ref/typeref with the fragment. Swallow any trailing identifier-
     // chain characters (letters, digits, underscores, dots) into the
-    // same ppFragment token so the grammar sees a single leaf at the
+    // same ppFragmentExpr token so the grammar sees a single leaf at the
     // expected position. Stops at the first char that isn't part of an
     // identifier chain: whitespace, newline, EOF, punctuation, `(`,
     // `;`, `:`, `,`, `{`, etc.
@@ -185,6 +185,6 @@ bool tree_sitter_pascal_external_scanner_scan(
     }
 
     lexer->mark_end(lexer);
-    lexer->result_symbol = PP_FRAGMENT;
+    lexer->result_symbol = PP_FRAGMENT_EXPR;
     return true;
 }

@@ -208,7 +208,7 @@ end;
           (identifier)
           (type
             (typeref
-              (ppFragment))))))
+              (ppFragmentExpr))))))
     (block
       (kBegin)
       (kEnd))))
@@ -318,7 +318,7 @@ type
       (identifier)
       (type
         (typeref
-          (ppFragment)))))
+          (ppFragmentExpr)))))
   (declTypes
     (kType)
     (declType
@@ -326,7 +326,7 @@ type
       (kEq)
       (type
         (typeref
-          (ppFragment))))))
+          (ppFragmentExpr))))))
 
 ===
 Preprocessor directives in uses clause
@@ -597,7 +597,7 @@ end;
       (kFunction)
       (identifier)
       (typeref
-        (ppFragment)))
+        (ppFragmentExpr)))
     (block
       (kBegin)
       (kEnd))))
@@ -621,7 +621,7 @@ end;
     (block
       (kBegin)
       (assignment
-        (ppFragment)
+        (ppFragmentExpr)
         (kAssign)
         (literalString))
       (kEnd))))
@@ -645,7 +645,7 @@ end;
     (block
       (kBegin)
       (statement
-        (ppFragment))
+        (ppFragmentExpr))
       (kEnd))))
 
 ===
@@ -669,7 +669,7 @@ end;
       (assignment
         (identifier)
         (kAssign)
-        (ppFragment))
+        (ppFragmentExpr))
       (kEnd))))
 
 ===
@@ -701,7 +701,7 @@ end;
           (kOn)
           (identifier)
           (typeref
-            (ppFragment))
+            (ppFragmentExpr))
           (kDo))
         (kEnd))
       (kEnd))))
@@ -851,7 +851,7 @@ const
       (identifier)
       (defaultValue
         (kEq)
-        (ppFragment)))))
+        (ppFragmentExpr)))))
 
 ===
 Preprocessor fragment with space padding (assignment RHS)
@@ -882,7 +882,7 @@ end;
       (assignment
         (identifier)
         (kAssign)
-        (ppFragment))
+        (ppFragmentExpr))
       (kEnd))))
 
 ===
@@ -908,5 +908,5 @@ end;
           (identifier)
           (exprArgs
             (identifier)
-            (ppFragment))))
+            (ppFragmentExpr))))
       (kEnd))))
