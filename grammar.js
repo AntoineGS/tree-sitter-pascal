@@ -319,6 +319,14 @@ module.exports = grammar({
 		[$.varAssignDef, $.varDef, $.declVars],
 		[$._ref, $._genericName],
 		[$._ref, $._genericName, $.declConst],
+		// exprTpl's template args are typerefs (not arbitrary expressions)
+		// so comma-separated literal lists like `IfThen(qty<0,-1,1)` can't
+		// be mistaken for a generic call. The `<` disambiguation still uses
+		// the tentative-node trick documented on exprTpl, but now the
+		// template parse dies as soon as a non-typeref appears, leaving
+		// exprBinary as the only survivor. Declaring the _ref/_typeref
+		// conflict is needed because both accept ppFragmentExpr.
+		[$._ref, $._typeref],
 		[$.defProc, $.ppBlock],
 		[$.exprBrackets, $.rttiAttributes],
 		[$._expr],
@@ -510,7 +518,7 @@ module.exports = grammar({
 		// template. Then the existing node is simply "renamed". Because of
 		// this, we can't have an extra node in only one of the branches.
 		//
-		exprTpl:         $ => op.args(5, $._ref, $.kLt, delimited1($._expr, ',', 5),  $.kGt),
+		exprTpl:         $ => prec.dynamic(1, op.args(5, $._ref, $.kLt, delimited1($._typeref, ',', 5),  $.kGt)),
 		exprSubscript:   $ => op.args(5, $._ref, '[',   $.exprArgs,  ']'  ),
 		exprCall:        $ => op.args(5, $._ref, '(',   optional($.exprArgs), ')'  ),
 
@@ -574,7 +582,7 @@ module.exports = grammar({
 		typeref:         $ => seq(
 			...enable_if(fpc, field('_dummy', optional($.kSpecialize))),
 			$._typeref,
-			...enable_if(delphi, optional(seq($.kDeprecated, $._expr))),
+			...enable_if(delphi, optional(prec.right(seq($.kDeprecated, optional($._expr))))),
 		),
 
 		_typeref:        $ => choice(
@@ -809,7 +817,8 @@ module.exports = grammar({
 		declFile:        $ => seq($.kFile, optional(seq($.kOf, $.type))),
 		declString:      $ => prec.left(seq(
 			$.kString,
-			optional(seq('[', choice($._expr), ']'))
+			optional(seq('[', choice($._expr), ']')),
+			...enable_if(delphi, optional(prec.right(seq($.kDeprecated, optional($._expr))))),
 		)),
 
 		declProcRef:     $ => prec.right(1,seq(
