@@ -4042,6 +4042,10 @@
                 {
                   "type": "SYMBOL",
                   "name": "declProcRef"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "declSubRange"
                 }
               ]
             }
@@ -4101,6 +4105,10 @@
                 {
                   "type": "SYMBOL",
                   "name": "declProcRef"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "declSubRange"
                 }
               ]
             },
@@ -4160,6 +4168,10 @@
                       {
                         "type": "SYMBOL",
                         "name": "declProcRef"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "declSubRange"
                       }
                     ]
                   }
@@ -4184,6 +4196,66 @@
               "value": "ppEndIf"
             }
           ]
+        }
+      ]
+    },
+    "declSubRange": {
+      "type": "PREC",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "_subRangeBound"
+          },
+          {
+            "type": "STRING",
+            "value": ".."
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_subRangeBound"
+          }
+        ]
+      }
+    },
+    "_subRangeBound": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "literalNumber"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "-"
+                },
+                {
+                  "type": "STRING",
+                  "value": "+"
+                }
+              ]
+            },
+            {
+              "type": "SYMBOL",
+              "name": "literalNumber"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "literalString"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_typeref"
         }
       ]
     },

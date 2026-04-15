@@ -2722,6 +2722,45 @@
     }
   },
   {
+    "type": "declSubRange",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "literalNumber",
+          "named": true
+        },
+        {
+          "type": "literalString",
+          "named": true
+        },
+        {
+          "type": "ppFragmentExpr",
+          "named": true
+        },
+        {
+          "type": "typerefDot",
+          "named": true
+        },
+        {
+          "type": "typerefPtr",
+          "named": true
+        },
+        {
+          "type": "typerefTpl",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "declType",
     "named": true,
     "fields": {
@@ -6023,12 +6062,22 @@
     }
   },
   {
+    "type": "kAdd",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "kDot",
     "named": true,
     "fields": {}
   },
   {
     "type": "kEndDot",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "kSub",
     "named": true,
     "fields": {}
   },
@@ -8054,6 +8103,10 @@
           "named": true
         },
         {
+          "type": "declSubRange",
+          "named": true
+        },
+        {
           "type": "ppElse",
           "named": true
         },
@@ -8839,7 +8892,15 @@
     "named": false
   },
   {
+    "type": "+",
+    "named": false
+  },
+  {
     "type": ",",
+    "named": false
+  },
+  {
+    "type": "-",
     "named": false
   },
   {
@@ -8880,10 +8941,6 @@
   },
   {
     "type": "kAbstract",
-    "named": true
-  },
-  {
-    "type": "kAdd",
     "named": true
   },
   {
@@ -9404,10 +9461,6 @@
   },
   {
     "type": "kString",
-    "named": true
-  },
-  {
-    "type": "kSub",
     "named": true
   },
   {

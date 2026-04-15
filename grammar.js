@@ -577,7 +577,23 @@ module.exports = grammar({
 			$.declFile,
 			$.declString,
 			$.declProcRef,
+			$.declSubRange,
 		)),
+
+		// Pascal subrange type alias: `TDigit = 0..9;` or
+		// `TMultiPayProcs = sppShift4 .. sppTenderRetail;`. Bounds are
+		// narrowed (not full `_expr`) so that `type = '(' ident ')'` stays
+		// unambiguous against `declEnum`; in particular we exclude paren-
+		// wrapped expressions so `(` can only start a `declEnum`.
+		declSubRange:    $ => prec(1, seq(
+			$._subRangeBound, '..', $._subRangeBound
+		)),
+		_subRangeBound:  $ => choice(
+			$.literalNumber,
+			seq(choice('-', '+'), $.literalNumber),
+			$.literalString,
+			$._typeref,
+		),
 
 		typeref:         $ => seq(
 			...enable_if(fpc, field('_dummy', optional($.kSpecialize))),
