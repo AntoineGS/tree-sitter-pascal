@@ -101,6 +101,23 @@ function pp($, ...rule) {
 	);
 }
 
+function ppAttribute($, rule) {
+	if (!use_pp)
+		return rule;
+	return choice(
+		rule,
+		seq(
+			alias($._ppIf, $.ppIf),
+			rule,
+			repeat(seq(
+				alias($._ppElse, $.ppElse),
+				rule
+			)),
+			alias($._ppEndIf, $.ppEndIf)
+		)
+	);
+}
+
 // Preprocessor block wrapper for repeat contexts.
 // Generates a ppBlock node with structured ppIf/ppElse/ppEndIf children
 // wrapping the given content choices. Used in _declarations, _statements, etc.
@@ -108,13 +125,13 @@ function ppIn($, ...contentChoices) {
 	if (!use_pp)
 		return choice(...contentChoices); // fallback: just the content
 	return seq(
-		alias(token(prec(5, /\{\$(ifdef|ifndef|if)([^a-zA-Z_}][^}]*)?\}/i)), $.ppIf),
+		alias($._ppIf, $.ppIf),
 		repeat(choice(...contentChoices)),
 		repeat(seq(
-			alias(token(prec(5, /\{\$(elseif|else)([^a-zA-Z_}][^}]*)?\}/i)), $.ppElse),
+			alias($._ppElse, $.ppElse),
 			repeat(choice(...contentChoices))
 		)),
-		alias(token(prec(5, /\{\$(endif|ifend)([^a-zA-Z_}][^}]*)?\}/i)), $.ppEndIf)
+		alias($._ppEndIf, $.ppEndIf)
 	);
 }
 
@@ -735,6 +752,12 @@ module.exports = grammar({
 			)),
 			alias(token(prec(5, /\{\$(endif|ifend)([^a-zA-Z_}][^}]*)?\}/i)), $.ppEndIf)
 		),
+		// Shared terminals let the parser distinguish a conditional attribute
+		// from a directive-wrapped class section using the following token.
+		_ppIf:    $ => token(prec(5, /\{\$(ifdef|ifndef|if)([^a-zA-Z_}][^}]*)?\}/i)),
+		_ppElse:  $ => token(prec(5, /\{\$(elseif|else)([^a-zA-Z_}][^}]*)?\}/i)),
+		_ppEndIf: $ => token(prec(5, /\{\$(endif|ifend)([^a-zA-Z_}][^}]*)?\}/i)),
+
 		ppBlock: $ => ppIn($,
 			// Declaration items
 			$.declType, $.declVar, $.declConst, $.declProc, $.declProp,
@@ -906,10 +929,10 @@ module.exports = grammar({
 		),
 
 		ppDeclSection:   $ => seq(
-			alias(token(prec(5, /\{\$(ifdef|ifndef|if)([^a-zA-Z_}][^}]*)?\}/i)), $.ppIf),
+			alias($._ppIf, $.ppIf),
 			optional($.kStrict),
 			choice($._visibility, ...enable_if(objc, $.kRequired, $.kOptional)),
-			alias(token(prec(5, /\{\$(endif|ifend)([^a-zA-Z_}][^}]*)?\}/i)), $.ppEndIf),
+			alias($._ppEndIf, $.ppEndIf),
 			optional($._declFields),
 			optional($._classDeclarations)
 		),
@@ -1053,11 +1076,11 @@ module.exports = grammar({
 				']', ';'
 			))
 		)/*)*/,
-		_procAttributeNoExt: $ => /*pp($,*/ choice(
-			seq(field('attribute', $.procAttribute), ';'),
+		_procAttributeNoExt: $ => choice(
+			seq(ppAttribute($, field('attribute', $.procAttribute)), ';'),
 			// FPC-specific syntax, e.g. procedure myproc; [public; alias:'bla'; cdecl];
 			...enable_if(fpc, seq('[', delimited(field('attribute', choice($.procAttribute)), ';'), ']', ';'))
-		)/*)*/,
+		),
 
 		procAttribute:   $ => choice(
 			$.kStatic, $.kVirtual, $.kDynamic, $.kAbstract, $.kOverride,

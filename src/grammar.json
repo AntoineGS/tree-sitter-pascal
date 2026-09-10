@@ -5505,22 +5505,50 @@
         }
       ]
     },
+    "_ppIf": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 5,
+        "content": {
+          "type": "PATTERN",
+          "value": "\\{\\$(ifdef|ifndef|if)([^a-zA-Z_}][^}]*)?\\}",
+          "flags": "i"
+        }
+      }
+    },
+    "_ppElse": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 5,
+        "content": {
+          "type": "PATTERN",
+          "value": "\\{\\$(elseif|else)([^a-zA-Z_}][^}]*)?\\}",
+          "flags": "i"
+        }
+      }
+    },
+    "_ppEndIf": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 5,
+        "content": {
+          "type": "PATTERN",
+          "value": "\\{\\$(endif|ifend)([^a-zA-Z_}][^}]*)?\\}",
+          "flags": "i"
+        }
+      }
+    },
     "ppBlock": {
       "type": "SEQ",
       "members": [
         {
           "type": "ALIAS",
           "content": {
-            "type": "TOKEN",
-            "content": {
-              "type": "PREC",
-              "value": 5,
-              "content": {
-                "type": "PATTERN",
-                "value": "\\{\\$(ifdef|ifndef|if)([^a-zA-Z_}][^}]*)?\\}",
-                "flags": "i"
-              }
-            }
+            "type": "SYMBOL",
+            "name": "_ppIf"
           },
           "named": true,
           "value": "ppIf"
@@ -5618,16 +5646,8 @@
               {
                 "type": "ALIAS",
                 "content": {
-                  "type": "TOKEN",
-                  "content": {
-                    "type": "PREC",
-                    "value": 5,
-                    "content": {
-                      "type": "PATTERN",
-                      "value": "\\{\\$(elseif|else)([^a-zA-Z_}][^}]*)?\\}",
-                      "flags": "i"
-                    }
-                  }
+                  "type": "SYMBOL",
+                  "name": "_ppElse"
                 },
                 "named": true,
                 "value": "ppElse"
@@ -5723,16 +5743,8 @@
         {
           "type": "ALIAS",
           "content": {
-            "type": "TOKEN",
-            "content": {
-              "type": "PREC",
-              "value": 5,
-              "content": {
-                "type": "PATTERN",
-                "value": "\\{\\$(endif|ifend)([^a-zA-Z_}][^}]*)?\\}",
-                "flags": "i"
-              }
-            }
+            "type": "SYMBOL",
+            "name": "_ppEndIf"
           },
           "named": true,
           "value": "ppEndIf"
@@ -7330,16 +7342,8 @@
         {
           "type": "ALIAS",
           "content": {
-            "type": "TOKEN",
-            "content": {
-              "type": "PREC",
-              "value": 5,
-              "content": {
-                "type": "PATTERN",
-                "value": "\\{\\$(ifdef|ifndef|if)([^a-zA-Z_}][^}]*)?\\}",
-                "flags": "i"
-              }
-            }
+            "type": "SYMBOL",
+            "name": "_ppIf"
           },
           "named": true,
           "value": "ppIf"
@@ -7376,16 +7380,8 @@
         {
           "type": "ALIAS",
           "content": {
-            "type": "TOKEN",
-            "content": {
-              "type": "PREC",
-              "value": 5,
-              "content": {
-                "type": "PATTERN",
-                "value": "\\{\\$(endif|ifend)([^a-zA-Z_}][^}]*)?\\}",
-                "flags": "i"
-              }
-            }
+            "type": "SYMBOL",
+            "name": "_ppEndIf"
           },
           "named": true,
           "value": "ppEndIf"
@@ -8879,12 +8875,73 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "FIELD",
-              "name": "attribute",
-              "content": {
-                "type": "SYMBOL",
-                "name": "procAttribute"
-              }
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "FIELD",
+                  "name": "attribute",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "procAttribute"
+                  }
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "ALIAS",
+                      "content": {
+                        "type": "SYMBOL",
+                        "name": "_ppIf"
+                      },
+                      "named": true,
+                      "value": "ppIf"
+                    },
+                    {
+                      "type": "FIELD",
+                      "name": "attribute",
+                      "content": {
+                        "type": "SYMBOL",
+                        "name": "procAttribute"
+                      }
+                    },
+                    {
+                      "type": "REPEAT",
+                      "content": {
+                        "type": "SEQ",
+                        "members": [
+                          {
+                            "type": "ALIAS",
+                            "content": {
+                              "type": "SYMBOL",
+                              "name": "_ppElse"
+                            },
+                            "named": true,
+                            "value": "ppElse"
+                          },
+                          {
+                            "type": "FIELD",
+                            "name": "attribute",
+                            "content": {
+                              "type": "SYMBOL",
+                              "name": "procAttribute"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "ALIAS",
+                      "content": {
+                        "type": "SYMBOL",
+                        "name": "_ppEndIf"
+                      },
+                      "named": true,
+                      "value": "ppEndIf"
+                    }
+                  ]
+                }
+              ]
             },
             {
               "type": "STRING",
