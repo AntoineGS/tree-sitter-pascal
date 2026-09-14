@@ -189,7 +189,7 @@ function statements(trailing) {
 
 		[rn('foreach'),     $ => seq(
 			$.kFor,
-			field('iterator', $._expr), $.kIn,
+			field('iterator', choice($._expr, ...enable_if(delphi, $.varAssignDef))), $.kIn,
 			field('iterable', $._expr), $.kDo,
 			field('body', lastStatement($))
 		)],
@@ -240,7 +240,7 @@ function statements(trailing) {
 			repeat($.caseCase),
 			optional(tr($,'caseCase')),
 			optional(seq(
-				$.kElse,
+				choice($.kElse, ...enable_if(fpc, $.kOtherwise)),
 				optional(':'),
 				optional(tr($,'_statements'))
 			)),
@@ -444,8 +444,16 @@ module.exports = grammar({
 		// EXPRESSIONS ---------------------------------------------------------
 
 		_expr:           $ => choice(
-			$._ref, $.exprBinary, $.exprUnary
+			$._ref, $.exprBinary, $.exprUnary,
+			...enable_if(delphi, $.exprConditional)
 		),
+
+		// Bind below binary operators and prefer ordinary if statements at block level.
+		exprConditional: $ => prec.right(-1, seq(
+			$.kIf, field('condition', $._expr),
+			$.kThen, field('then', $._expr),
+			$.kElse, field('else', $._expr)
+		)),
 
 		_ref:            $ => choice(
 			...enable_if(templates && fpc,
@@ -543,6 +551,8 @@ module.exports = grammar({
 		legacyFormat:    $ => repeat1(seq(':', $._expr)),
 
 		exprArgs:        $ => delimited1(seq($._expr, optional($.legacyFormat))),
+		// A separate reduction distinguishes `is not T` from `is (not T)`.
+		_exprIsNot:      $ => prec(5, seq($.kIs, $.kNot)),
 
 		exprBinary:      $ => choice(
 			op.infix(1, $._expr, $.kLt,  $._expr),
@@ -554,6 +564,10 @@ module.exports = grammar({
 			op.infix(1, $._expr, $.kGte, $._expr),
 			op.infix(1, $._expr, $.kIn,  $._expr),
 			op.infix(1, $._expr, $.kIs,  $._expr),
+			...enable_if(delphi,
+				op.infix(1, $._expr, seq($.kNot, $.kIn), $._expr),
+				op.infix(1, $._expr, $._exprIsNot, $._expr)
+			),
 
 			op.infix(2, $._expr, $.kAdd, $._expr),
 			op.infix(2, $._expr, $.kSub, $._expr),
@@ -668,7 +682,8 @@ module.exports = grammar({
 		literalNumber:   $ => choice($._literalInt, $._literalFloat),
 		_literalInt:     $ => choice(
 			token.immediate(/[-+]?[0-9]+/),
-			token.immediate(/\$[a-fA-F0-9]+/)
+			token.immediate(/\$[a-fA-F0-9]+/),
+			...enable_if(fpc, token.immediate(/%[01]+/))
 		),
 		_literalFloat:   $ => prec(10, /[-+]?[0-9]*\.?[0-9]+(e[+-]?[0-9]+)?/),
 
@@ -1022,8 +1037,7 @@ module.exports = grammar({
 			field('name', $._operatorName),
 			field('args', optional($.declArgs)),
 			...enable_if(fpc, field('resultName', optional($.identifier))),
-			':',
-			field('type', $.type),
+			optional(seq(':', field('type', $.type))),
 			field('assign', optional($.defaultValue)),
 			';',
 			repeat($._procAttributeNoExt)
@@ -1051,7 +1065,8 @@ module.exports = grammar({
 
 		declArg:         $ => choice(
 			seq(
-				choice($.kVar, $.kConst, $.kOut, $.kConstref),
+				choice($.kVar, $.kOut, $.kConstref,
+					seq($.kConst, ...enable_if(delphi, optional($.rttiAttributes)))),
 				field('name', delimited1($.identifier)),
 				optional(seq(
 					':', field('type', $.type),
@@ -1245,6 +1260,7 @@ module.exports = grammar({
 		kIf:               $ => /if/i,
 		kThen:             $ => /then/i,
 		kElse:             $ => /else/i,
+		kOtherwise:        $ => /otherwise/i,
 		kDo:               $ => /do/i,
 		kWhile:            $ => /while/i,
 		kRepeat:           $ => /repeat/i,

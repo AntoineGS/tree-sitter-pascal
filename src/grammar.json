@@ -534,8 +534,17 @@
           "type": "FIELD",
           "name": "iterator",
           "content": {
-            "type": "SYMBOL",
-            "name": "_expr"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_expr"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "varAssignDef"
+              }
+            ]
           }
         },
         {
@@ -866,8 +875,17 @@
                 "type": "SEQ",
                 "members": [
                   {
-                    "type": "SYMBOL",
-                    "name": "kElse"
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "kElse"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "kOtherwise"
+                      }
+                    ]
                   },
                   {
                     "type": "CHOICE",
@@ -1527,8 +1545,17 @@
           "type": "FIELD",
           "name": "iterator",
           "content": {
-            "type": "SYMBOL",
-            "name": "_expr"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_expr"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "varAssignDef"
+              }
+            ]
           }
         },
         {
@@ -1887,8 +1914,17 @@
                 "type": "SEQ",
                 "members": [
                   {
-                    "type": "SYMBOL",
-                    "name": "kElse"
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "kElse"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "kOtherwise"
+                      }
+                    ]
                   },
                   {
                     "type": "CHOICE",
@@ -2580,8 +2616,57 @@
         {
           "type": "SYMBOL",
           "name": "exprUnary"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "exprConditional"
         }
       ]
+    },
+    "exprConditional": {
+      "type": "PREC_RIGHT",
+      "value": -1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "kIf"
+          },
+          {
+            "type": "FIELD",
+            "name": "condition",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_expr"
+            }
+          },
+          {
+            "type": "SYMBOL",
+            "name": "kThen"
+          },
+          {
+            "type": "FIELD",
+            "name": "then",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_expr"
+            }
+          },
+          {
+            "type": "SYMBOL",
+            "name": "kElse"
+          },
+          {
+            "type": "FIELD",
+            "name": "else",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_expr"
+            }
+          }
+        ]
+      }
     },
     "_ref": {
       "type": "CHOICE",
@@ -3135,6 +3220,23 @@
         }
       ]
     },
+    "_exprIsNot": {
+      "type": "PREC",
+      "value": 5,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "kIs"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "kNot"
+          }
+        ]
+      }
+    },
     "exprBinary": {
       "type": "CHOICE",
       "members": [
@@ -3422,6 +3524,81 @@
                 "content": {
                   "type": "SYMBOL",
                   "name": "kIs"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "rhs",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_expr"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "PREC_LEFT",
+          "value": 1,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "lhs",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_expr"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "operator",
+                "content": {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "kNot"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "kIn"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "rhs",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_expr"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "PREC_LEFT",
+          "value": 1,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "lhs",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_expr"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "operator",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_exprIsNot"
                 }
               },
               {
@@ -4763,6 +4940,13 @@
           "content": {
             "type": "PATTERN",
             "value": "\\$[a-fA-F0-9]+"
+          }
+        },
+        {
+          "type": "IMMEDIATE_TOKEN",
+          "content": {
+            "type": "PATTERN",
+            "value": "%[01]+"
           }
         }
       ]
@@ -8324,16 +8508,29 @@
           }
         },
         {
-          "type": "STRING",
-          "value": ":"
-        },
-        {
-          "type": "FIELD",
-          "name": "type",
-          "content": {
-            "type": "SYMBOL",
-            "name": "type"
-          }
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": ":"
+                },
+                {
+                  "type": "FIELD",
+                  "name": "type",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "type"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "FIELD",
@@ -8586,15 +8783,32 @@
                 },
                 {
                   "type": "SYMBOL",
-                  "name": "kConst"
-                },
-                {
-                  "type": "SYMBOL",
                   "name": "kOut"
                 },
                 {
                   "type": "SYMBOL",
                   "name": "kConstref"
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "kConst"
+                    },
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "rttiAttributes"
+                        },
+                        {
+                          "type": "BLANK"
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             },
@@ -10006,6 +10220,11 @@
     "kElse": {
       "type": "PATTERN",
       "value": "else",
+      "flags": "i"
+    },
+    "kOtherwise": {
+      "type": "PATTERN",
+      "value": "otherwise",
       "flags": "i"
     },
     "kDo": {
